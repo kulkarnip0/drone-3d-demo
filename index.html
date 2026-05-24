@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drone 3D Mission World</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: #101820;
+    }
+
+    #info {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 10;
+      color: white;
+      background: rgba(0, 0, 0, 0.45);
+      padding: 12px 14px;
+      border-radius: 8px;
+      max-width: 360px;
+      line-height: 1.4;
+    }
+
+    #info h1 {
+      font-size: 18px;
+      margin: 0 0 6px 0;
+    }
+
+    #info p {
+      font-size: 13px;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="info">
+    <h1>Drone 3D Mission World</h1>
+    <p>Simple investor demo: terrain, roads, buildings, trees, mission zones, drone paths, and moving drones.</p>
+  </div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
