@@ -1,0 +1,18 @@
+{
+  "name": "drone-3d-demo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A lightweight browser-based 3D drone mission world demo using Three.js.",
+  "scripts": {
+    "dev": "npx serve .",
+    "start": "npx serve ."
+  },
+  "keywords": [
+    "threejs",
+    "drone",
+    "uav",
+    "mission-planning",
+    "3d-demo"
+  ],
+  "license": "MIT"
+}
