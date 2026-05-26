@@ -136,9 +136,73 @@ export function createCommandPost() {
   return group;
 }
 
+export function createSangarPost() {
+  const group = new THREE.Group();
+  group.name = "Sangar Guard Post";
+
+  const stoneMaterial = new THREE.MeshStandardMaterial({ color: 0x8b806f, roughness: 0.95 });
+  const sandbagMaterial = new THREE.MeshStandardMaterial({ color: 0xb39b73, roughness: 0.92 });
+  const shadowMaterial = new THREE.MeshStandardMaterial({ color: 0x3a3328, roughness: 0.95 });
+
+  const floor = new THREE.Mesh(new THREE.CylinderGeometry(2.8, 2.8, 0.18, 24), shadowMaterial);
+  floor.position.y = 0.09;
+  group.add(floor);
+
+  const wallRadius = 2.55;
+  const sandbagCount = 18;
+
+  for (let layer = 0; layer < 3; layer += 1) {
+    for (let i = 0; i < sandbagCount; i += 1) {
+      const gapStart = i > 1 && i < 5;
+      if (gapStart && layer < 2) continue;
+
+      const angle = (i / sandbagCount) * Math.PI * 2;
+      const bag = new THREE.Mesh(
+        new THREE.BoxGeometry(0.85, 0.32, 0.42),
+        sandbagMaterial
+      );
+      bag.position.set(
+        Math.cos(angle) * wallRadius,
+        0.38 + layer * 0.34,
+        Math.sin(angle) * wallRadius
+      );
+      bag.rotation.y = -angle;
+      group.add(bag);
+    }
+  }
+
+  for (let i = 0; i < 10; i += 1) {
+    const angle = (i / 10) * Math.PI * 2 + 0.15;
+    const stone = new THREE.Mesh(
+      new THREE.DodecahedronGeometry(0.28 + (i % 3) * 0.05),
+      stoneMaterial
+    );
+    stone.position.set(
+      Math.cos(angle) * 1.9,
+      0.25,
+      Math.sin(angle) * 1.9
+    );
+    stone.rotation.set(i * 0.2, i * 0.4, i * 0.1);
+    group.add(stone);
+  }
+
+  const lookout = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.12, 0.5), shadowMaterial);
+  lookout.position.set(0, 1.45, 2.55);
+  group.add(lookout);
+
+  const flagPole = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 2.2, 8), shadowMaterial);
+  flagPole.position.set(-1.9, 2.0, -1.7);
+  group.add(flagPole);
+
+  group.add(makeLabel("Sangar"));
+  applyShadow(group);
+  return group;
+}
+
 export function createAssetByType(type) {
   if (type === "launcher") return createLauncherVehicle();
   if (type === "radar") return createRadarUnit();
   if (type === "command") return createCommandPost();
+  if (type === "sangar") return createSangarPost();
   return createCommandPost();
 }
