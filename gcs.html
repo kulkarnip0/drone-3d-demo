@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ground Control Station</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      color: #edf6ff;
+      background:
+        radial-gradient(circle at top left, rgba(0, 210, 255, 0.18), transparent 36%),
+        linear-gradient(135deg, #07111f 0%, #0b1727 45%, #08101b 100%);
+    }
+
+    .shell {
+      padding: 20px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .title h1 {
+      margin: 0;
+      font-size: 26px;
+      letter-spacing: 0.4px;
+    }
+
+    .title p {
+      margin: 5px 0 0 0;
+      color: rgba(237, 246, 255, 0.72);
+      font-size: 13px;
+    }
+
+    .status-pill {
+      padding: 9px 13px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .status-pill.live {
+      color: #8fffc1;
+      border-color: rgba(143, 255, 193, 0.45);
+      background: rgba(30, 180, 100, 0.15);
+    }
+
+    .status-pill.waiting {
+      color: #ffd27d;
+      border-color: rgba(255, 210, 125, 0.45);
+      background: rgba(255, 180, 40, 0.12);
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .metric-card,
+    .panel {
+      background: rgba(255, 255, 255, 0.075);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 16px;
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.24);
+      backdrop-filter: blur(10px);
+    }
+
+    .metric-card {
+      padding: 14px;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: rgba(237, 246, 255, 0.65);
+      margin-bottom: 8px;
+    }
+
+    .metric-value {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr 1fr;
+      gap: 14px;
+    }
+
+    .panel {
+      padding: 14px;
+      min-height: 220px;
+    }
+
+    .panel h2 {
+      margin: 0 0 12px 0;
+      font-size: 16px;
+    }
+
+    .mission-panel {
+      grid-column: span 3;
+      min-height: 120px;
+    }
+
+    .mission-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    .kv-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 5px 0;
+      font-size: 12px;
+      color: rgba(237, 246, 255, 0.75);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .kv-row strong {
+      color: #ffffff;
+      text-align: right;
+    }
+
+    .data-card {
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .data-card-title {
+      font-weight: bold;
+      margin-bottom: 6px;
+      color: #aee8ff;
+    }
+
+    .empty-state {
+      color: rgba(237, 246, 255, 0.55);
+      font-size: 13px;
+      padding: 10px;
+      border: 1px dashed rgba(255, 255, 255, 0.16);
+      border-radius: 12px;
+    }
+
+    .alert-item {
+      padding: 10px;
+      margin-bottom: 8px;
+      border-left: 3px solid #3fd3ff;
+      border-radius: 8px;
+      background: rgba(63, 211, 255, 0.08);
+      color: rgba(237, 246, 255, 0.88);
+      font-size: 13px;
+    }
+
+    .open-sim {
+      color: #aee8ff;
+      text-decoration: none;
+      font-size: 13px;
+      margin-left: 12px;
+    }
+
+    @media (max-width: 1000px) {
+      .metrics { grid-template-columns: repeat(2, 1fr); }
+      .grid { grid-template-columns: 1fr; }
+      .mission-panel { grid-column: span 1; }
+      .mission-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="topbar">
+      <div class="title">
+        <h1>Ground Control Station</h1>
+        <p>Live mission telemetry from the 3D UAV simulation tab.</p>
+      </div>
+      <div>
+        <span id="connection-status" class="status-pill waiting">WAITING FOR SIM</span>
+        <a class="open-sim" href="./index.html" target="_blank">Open Simulation</a>
+      </div>
+    </section>
+
+    <section class="metrics">
+      <div class="metric-card">
+        <div class="metric-label">UAV Fleet</div>
+        <div id="uav-count" class="metric-value">0</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Tracked Ground Objects</div>
+        <div id="tracked-count" class="metric-value">0</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Placed Assets</div>
+        <div id="asset-count" class="metric-value">0</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Threat Level</div>
+        <div id="threat-level" class="metric-value">-</div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="panel mission-panel">
+        <h2>Mission State</h2>
+        <div class="mission-grid">
+          <div class="data-card">Mission<br><strong id="mission-name">-</strong></div>
+          <div class="data-card">Status<br><strong id="mission-status">-</strong></div>
+          <div class="data-card">Camera<br><strong id="camera-mode">-</strong></div>
+          <div class="data-card">Sim Time<br><strong id="sim-time">-</strong></div>
+          <div class="data-card">Last Update<br><strong id="last-update">-</strong></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Drone Fleet Telemetry</h2>
+        <div id="drone-list" class="panel-list"></div>
+      </div>
+
+      <div class="panel">
+        <h2>Dynamic Ground Objects</h2>
+        <div id="object-list" class="panel-list"></div>
+      </div>
+
+      <div class="panel">
+        <h2>Placed Field Assets</h2>
+        <div id="asset-list" class="panel-list"></div>
+      </div>
+
+      <div class="panel">
+        <h2>Mission Alerts</h2>
+        <div id="alerts" class="panel-list">
+          <div class="empty-state">Open the simulation tab to start receiving mission state.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { startGCSDashboard } from "./src/gcs/gcsDashboard.js";
+    startGCSDashboard();
+  </script>
+</body>
+</html>
