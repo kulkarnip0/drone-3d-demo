@@ -25,7 +25,7 @@
       top: 16px;
       left: 16px;
       z-index: 10;
-      width: 360px;
+      width: 380px;
       padding: 14px;
       border-radius: 14px;
       background: rgba(0, 0, 0, 0.56);
@@ -65,6 +65,17 @@
       margin-top: 4px;
       color: white;
       font-size: 17px;
+    }
+
+    #measurement-panel {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(255, 220, 80, 0.1);
+      border: 1px solid rgba(255, 220, 80, 0.32);
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 12px;
+      line-height: 1.45;
     }
 
     .status-pill {
@@ -126,13 +137,14 @@
   <section class="hud">
     <span id="connection-status" class="status-pill waiting">WAITING FOR SIM</span>
     <h1>3D Observed Map Builder</h1>
-    <p>Separate reconstruction-style view. The map is not fully known at start. It is progressively built from UAV observation state published by the simulation.</p>
+    <p>Reconstruction-style view. Terrain, buildings, and detected assets appear slowly as UAVs observe the world. Click any reconstructed object or terrain patch to inspect approximate size.</p>
     <div class="stats">
       <div class="stat">Observed Cells<strong id="observed-count">0</strong></div>
       <div class="stat">Detected Assets<strong id="detected-count">0</strong></div>
       <div class="stat">Threat Level<strong id="threat-level">-</strong></div>
       <div class="stat">Last Update<strong id="last-update">-</strong></div>
     </div>
+    <div id="measurement-panel">Click a reconstructed building, terrain patch, or detected asset to see approximate dimensions.</div>
   </section>
 
   <nav class="links">
