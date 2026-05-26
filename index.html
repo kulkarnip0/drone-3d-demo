@@ -36,6 +36,52 @@
       font-size: 13px;
       margin: 0;
     }
+
+    #asset-palette {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 12;
+      width: 210px;
+      color: white;
+      background: rgba(0, 0, 0, 0.55);
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+    }
+
+    #asset-palette .palette-title {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    #asset-palette button {
+      width: 100%;
+      margin: 4px 0;
+      padding: 8px 10px;
+      color: white;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    #asset-palette button:hover,
+    #asset-palette button.active {
+      background: rgba(0, 200, 255, 0.32);
+      border-color: rgba(0, 220, 255, 0.8);
+    }
+
+    #asset-palette .palette-hint {
+      margin-top: 8px;
+      font-size: 11px;
+      line-height: 1.35;
+      color: rgba(255, 255, 255, 0.76);
+    }
   </style>
 
   <script type="importmap">
@@ -50,7 +96,7 @@
 <body>
   <div id="info">
     <h1>Coastal UAV Mission Sandbox</h1>
-    <p>Modular world demo: procedural hills, coastline, sea, beach, forest zones, terrain-aware roads, improved buildings, mission zones, drone paths, and drone camera views. Press 1/2/3 for drone cameras and 0 for free view.</p>
+    <p>Modular world demo with terrain, sea, mission zones, drones, camera views, and a top-right asset palette. Select an asset and click terrain to place it. Press 1/2/3 for drone cameras and 0 for free view.</p>
   </div>
 
   <script type="module" src="./main.js"></script>
