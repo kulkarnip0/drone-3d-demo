@@ -1,3 +1,5 @@
+import { createGCSMiniMap } from "./gcsMiniMap.js";
+
 function createRow(label, value) {
   const row = document.createElement("div");
   row.className = "kv-row";
@@ -47,6 +49,7 @@ function updateMetric(id, value) {
 }
 
 export function startGCSDashboard() {
+  const miniMap = createGCSMiniMap();
   const channel = new BroadcastChannel("uav-mission-state");
   const connection = document.getElementById("connection-status");
   const droneList = document.getElementById("drone-list");
@@ -60,6 +63,7 @@ export function startGCSDashboard() {
     const state = event.data;
     if (!state || state.type !== "SIMULATION_STATE") return;
 
+    miniMap.update(state);
     lastMessageTime = Date.now();
     connection.textContent = "LIVE";
     connection.className = "status-pill live";
