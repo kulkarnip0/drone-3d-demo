@@ -26,7 +26,7 @@ function renderTable(container, items, emptyText, columns) {
 
   items.forEach((item) => {
     const card = document.createElement("div");
-    card.className = "data-card";
+    card.className = item.status === "DETECTED" ? "data-card detected" : "data-card";
 
     const title = document.createElement("div");
     title.className = "data-card-title";
@@ -72,6 +72,7 @@ export function startGCSDashboard() {
     updateMetric("tracked-count", state.dynamicObjects.length);
     updateMetric("asset-count", state.placedAssets.length);
     updateMetric("threat-level", state.mission.threatLevel);
+    updateMetric("detected-count", state.mission.detectedAssets || 0);
     updateMetric("last-update", state.timestamp);
 
     renderTable(droneList, state.drones, "No UAV telemetry yet.", [
@@ -92,6 +93,7 @@ export function startGCSDashboard() {
     renderTable(assetList, state.placedAssets, "No assets placed yet.", [
       ["Type", "label"],
       ["Status", "status"],
+      ["Detected By", "detectedBy"],
       ["X", "x"],
       ["Z", "z"]
     ]);
@@ -104,12 +106,18 @@ export function startGCSDashboard() {
     ];
 
     if (state.placedAssets.length > 0) {
-      alertItems.push(`${state.placedAssets.length} field assets deployed. Threat level elevated.`);
+      alertItems.push(`${state.placedAssets.length} field assets deployed.`);
+    }
+
+    if (state.detections && state.detections.length > 0) {
+      state.detections.forEach((detection) => {
+        alertItems.push(`DETECTION: ${detection.label} seen by ${detection.detectedBy.join(", ")} at X ${detection.x}, Z ${detection.z}.`);
+      });
     }
 
     alertItems.forEach((text) => {
       const item = document.createElement("div");
-      item.className = "alert-item";
+      item.className = text.startsWith("DETECTION") ? "alert-item detection" : "alert-item";
       item.textContent = text;
       alerts.appendChild(item);
     });
