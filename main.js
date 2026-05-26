@@ -7,6 +7,7 @@ import { updateSea } from "./src/world/sea.js";
 import { buildMissionZones } from "./src/world/missionZones.js";
 import { buildDronePaths } from "./src/drones/dronePaths.js";
 import { buildDroneFleet, updateDroneFleet } from "./src/drones/buildDroneFleet.js";
+import { setupAssetPlacement } from "./src/placeables/assetPlacement.js";
 
 const viewer = createViewer();
 const clock = new THREE.Clock();
@@ -14,6 +15,7 @@ const clock = new THREE.Clock();
 addLights(viewer.scene);
 const world = buildWorld(viewer.scene);
 buildMissionZones(viewer.scene);
+setupAssetPlacement(viewer, world);
 
 const paths = buildDronePaths(viewer.scene);
 const drones = buildDroneFleet(viewer.scene, paths);
