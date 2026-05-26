@@ -17,6 +17,7 @@ export function getTerrainHeight(x, z) {
   }
 
   const inland = clamp((x - BEACH_END_X) / 70, 0, 1);
+  const farInland = clamp((x - 28) / 26, 0, 1);
 
   const rollingHills =
     Math.sin(x * 0.12) * 2.0 +
@@ -27,7 +28,25 @@ export function getTerrainHeight(x, z) {
   const ridgeA = Math.exp(-((x - 18) ** 2 + (z + 8) ** 2) / 550) * 6.5;
   const ridgeB = Math.exp(-((x - 34) ** 2 + (z - 22) ** 2) / 420) * 5.0;
 
-  const height = 0.25 + inland * 1.8 + rollingHills * inland + ridgeA + ridgeB;
+  // Mountain wall on the opposite side of the sea, near the far inland edge.
+  // This makes the green land end with a visible hill/ridge instead of fading flat.
+  const farRidgeProfile = Math.exp(-((x - 50) ** 2) / 180);
+  const farRidgeVariation = 0.75 + 0.25 * Math.sin(z * 0.11) + 0.18 * Math.cos(z * 0.21);
+  const farInlandRidge = farRidgeProfile * farRidgeVariation * 12.0;
+
+  const backHill = Math.exp(-((x - 44) ** 2 + (z + 30) ** 2) / 260) * 5.5;
+  const frontHill = Math.exp(-((x - 46) ** 2 + (z - 32) ** 2) / 280) * 5.0;
+
+  const height =
+    0.25 +
+    inland * 1.8 +
+    rollingHills * inland +
+    ridgeA +
+    ridgeB +
+    farInland * farInlandRidge +
+    backHill +
+    frontHill;
+
   return Math.max(0.06, height);
 }
 
