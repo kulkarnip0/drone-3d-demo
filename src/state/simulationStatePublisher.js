@@ -33,11 +33,12 @@ function getPlacedAssetState(assetPlacement) {
     x: round(asset.position.x),
     y: round(asset.position.y),
     z: round(asset.position.z),
-    status: "DEPLOYED"
+    status: asset.userData.detectionStatus || "NOT IN FOV",
+    detectedBy: asset.userData.detectedBy?.join(", ") || "-"
   }));
 }
 
-export function createSimulationStatePublisher({ viewer, drones, dynamicObjects, assetPlacement }) {
+export function createSimulationStatePublisher({ viewer, drones, dynamicObjects, assetPlacement, detectionState }) {
   const channel = new BroadcastChannel("uav-mission-state");
   let lastPublishTime = 0;
 
@@ -45,6 +46,7 @@ export function createSimulationStatePublisher({ viewer, drones, dynamicObjects,
     if (elapsedTime - lastPublishTime < 0.25) return;
     lastPublishTime = elapsedTime;
 
+    const detections = detectionState?.detections || [];
     const state = {
       type: "SIMULATION_STATE",
       timestamp: new Date().toLocaleTimeString(),
@@ -53,12 +55,14 @@ export function createSimulationStatePublisher({ viewer, drones, dynamicObjects,
       drones: getDroneState(drones),
       dynamicObjects: getDynamicObjectState(dynamicObjects),
       placedAssets: getPlacedAssetState(assetPlacement),
+      detections,
       mission: {
         name: "Coastal ISR Mission Sandbox",
         status: "RUNNING",
-        threatLevel: assetPlacement.placedAssets.length > 0 ? "ELEVATED" : "NORMAL",
+        threatLevel: detections.length > 0 ? "DETECTED CONTACT" : assetPlacement.placedAssets.length > 0 ? "ELEVATED" : "NORMAL",
         trackedObjects: dynamicObjects.length,
-        deployedAssets: assetPlacement.placedAssets.length
+        deployedAssets: assetPlacement.placedAssets.length,
+        detectedAssets: detections.length
       }
     };
 
