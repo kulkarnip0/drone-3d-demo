@@ -92,8 +92,10 @@ export function startGCSDashboard() {
 
     renderTable(assetList, state.placedAssets, "No assets placed yet.", [
       ["Type", "label"],
+      ["Side", "side"],
       ["Status", "status"],
-      ["Detected By", "detectedBy"],
+      ["Seen By", "detectedBy"],
+      ["First Seen", "firstSeenAt"],
       ["X", "x"],
       ["Z", "z"]
     ]);
@@ -106,18 +108,19 @@ export function startGCSDashboard() {
     ];
 
     if (state.placedAssets.length > 0) {
-      alertItems.push(`${state.placedAssets.length} field assets deployed.`);
+      alertItems.push(`${state.placedAssets.length} field assets deployed. Blue/Red side is being tracked.`);
     }
 
-    if (state.detections && state.detections.length > 0) {
-      state.detections.forEach((detection) => {
-        alertItems.push(`DETECTION: ${detection.label} seen by ${detection.detectedBy.join(", ")} at X ${detection.x}, Z ${detection.z}.`);
+    if (state.detectionLog && state.detectionLog.length > 0) {
+      state.detectionLog.slice(0, 8).forEach((entry) => {
+        const side = entry.side === "hostile" ? "RED/ENEMY" : "BLUE/FRIENDLY";
+        alertItems.push(`${entry.time} | ${entry.seenBy} first saw ${side} ${entry.label} at X ${entry.x}, Z ${entry.z}. Priority ${entry.priority}.`);
       });
     }
 
     alertItems.forEach((text) => {
       const item = document.createElement("div");
-      item.className = text.startsWith("DETECTION") ? "alert-item detection" : "alert-item";
+      item.className = text.includes("RED/ENEMY") ? "alert-item detection" : "alert-item";
       item.textContent = text;
       alerts.appendChild(item);
     });
