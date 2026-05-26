@@ -8,6 +8,7 @@ const WORLD = {
 };
 
 const observedCells = new Set();
+const droneTrails = new Map();
 
 function worldToCanvas(canvas, x, z) {
   const px = ((x - WORLD.minX) / (WORLD.maxX - WORLD.minX)) * canvas.width;
@@ -24,8 +25,76 @@ function drawCircle(ctx, x, y, radius, color, label) {
   if (label) {
     ctx.fillStyle = "white";
     ctx.font = "11px Arial";
-    ctx.fillText(label, x + 7, y - 7);
+    ctx.fillText(label, x + 8, y - 8);
   }
+}
+
+function drawDroneIcon(ctx, canvas, drone) {
+  const current = worldToCanvas(canvas, drone.x, drone.z);
+  const trail = droneTrails.get(drone.id) || [];
+  const previous = trail.length > 1 ? trail[trail.length - 2] : null;
+
+  let angle = 0;
+  if (previous) {
+    const prev = worldToCanvas(canvas, previous.x, previous.z);
+    angle = Math.atan2(current.y - prev.y, current.x - prev.x);
+  }
+
+  ctx.save();
+  ctx.translate(current.x, current.y);
+  ctx.rotate(angle);
+
+  ctx.beginPath();
+  ctx.moveTo(13, 0);
+  ctx.lineTo(-8, -8);
+  ctx.lineTo(-4, 0);
+  ctx.lineTo(-8, 8);
+  ctx.closePath();
+  ctx.fillStyle = "#ffffff";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(0, 0, 0, 0.55)";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.restore();
+
+  ctx.beginPath();
+  ctx.arc(current.x, current.y, 48, 0, Math.PI * 2);
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.24)";
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  ctx.fillStyle = "white";
+  ctx.font = "bold 12px Arial";
+  ctx.fillText(drone.id, current.x + 12, current.y - 12);
+}
+
+function updateDroneTrail(drone) {
+  if (!droneTrails.has(drone.id)) droneTrails.set(drone.id, []);
+  const trail = droneTrails.get(drone.id);
+  const last = trail[trail.length - 1];
+
+  if (!last || Math.abs(last.x - drone.x) > 0.6 || Math.abs(last.z - drone.z) > 0.6) {
+    trail.push({ x: drone.x, z: drone.z });
+  }
+
+  if (trail.length > 60) trail.shift();
+}
+
+function drawDroneTrails(ctx, canvas) {
+  droneTrails.forEach((trail) => {
+    if (trail.length < 2) return;
+
+    ctx.beginPath();
+    trail.forEach((point, index) => {
+      const p = worldToCanvas(canvas, point.x, point.z);
+      if (index === 0) ctx.moveTo(p.x, p.y);
+      else ctx.lineTo(p.x, p.y);
+    });
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.55)";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  });
 }
 
 function markObservedFromUavs(drones) {
@@ -93,12 +162,15 @@ function drawObservedCells(ctx, canvas) {
   });
 }
 
-function drawLegend(ctx, canvas) {
+function drawLegend(ctx) {
   const x = 14;
   let y = 20;
   ctx.font = "12px Arial";
   ctx.fillStyle = "rgba(255, 255, 255, 0.86)";
   ctx.fillText("Observed World Map", x, y);
+  y += 18;
+  ctx.fillStyle = "#ffffff";
+  ctx.fillText("white arrow + trail = moving UAV", x, y);
   y += 18;
   ctx.fillStyle = "rgba(90, 255, 150, 0.75)";
   ctx.fillText("green cells = observed by UAV camera/FOV", x, y);
@@ -130,7 +202,7 @@ export function createGCSMiniMap() {
   const hint = document.createElement("div");
   hint.className = "empty-state";
   hint.style.marginTop = "10px";
-  hint.textContent = "The map starts mostly unknown. UAV motion progressively reveals observed cells. Assets appear only after they are detected in a drone field of view.";
+  hint.textContent = "UAV arrows move live. White trails show recent motion. Green cells show the observed world being built from UAV coverage.";
 
   panel.appendChild(title);
   panel.appendChild(canvas);
@@ -142,18 +214,15 @@ export function createGCSMiniMap() {
   const ctx = canvas.getContext("2d");
 
   function update(state) {
-    markObservedFromUavs(state.drones || []);
+    const drones = state.drones || [];
+    drones.forEach(updateDroneTrail);
+    markObservedFromUavs(drones);
+
     drawBaseMap(ctx, canvas);
     drawObservedCells(ctx, canvas);
+    drawDroneTrails(ctx, canvas);
 
-    (state.drones || []).forEach((drone) => {
-      const p = worldToCanvas(canvas, drone.x, drone.z);
-      drawCircle(ctx, p.x, p.y, 6, "#ffffff", drone.id);
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 45, 0, Math.PI * 2);
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.22)";
-      ctx.stroke();
-    });
+    drones.forEach((drone) => drawDroneIcon(ctx, canvas, drone));
 
     (state.dynamicObjects || []).forEach((object) => {
       const p = worldToCanvas(canvas, object.x, object.z);
@@ -168,7 +237,7 @@ export function createGCSMiniMap() {
         drawCircle(ctx, p.x, p.y, 7, isRed ? "#ff4d4d" : "#4d8dff", asset.label);
       });
 
-    drawLegend(ctx, canvas);
+    drawLegend(ctx);
   }
 
   return { update };
