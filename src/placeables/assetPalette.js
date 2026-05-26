@@ -6,6 +6,7 @@ export function createAssetPalette(onSelectAsset) {
     <button data-asset="launcher">Launcher Vehicle</button>
     <button data-asset="radar">Radar Unit</button>
     <button data-asset="command">Command Post</button>
+    <button data-asset="sangar">Sangar Guard Post</button>
     <div class="palette-hint">Select asset, then click terrain to place. Press Esc to cancel.</div>
   `;
 
