@@ -93,3 +93,38 @@ export function createSupplyTruck() {
   applyShadow(group);
   return group;
 }
+
+export function createBoat() {
+  const group = new THREE.Group();
+  group.name = "Coastal Boat";
+
+  const hullMaterial = new THREE.MeshStandardMaterial({ color: 0xd96b3b, roughness: 0.62, metalness: 0.05 });
+  const deckMaterial = new THREE.MeshStandardMaterial({ color: 0xf4e2b8, roughness: 0.75 });
+  const cabinMaterial = new THREE.MeshStandardMaterial({ color: 0xe8f4ff, roughness: 0.35, metalness: 0.05 });
+  const mastMaterial = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.7 });
+
+  const hull = new THREE.Mesh(new THREE.BoxGeometry(5.8, 0.7, 1.8), hullMaterial);
+  hull.position.y = 0.35;
+  group.add(hull);
+
+  const bow = new THREE.Mesh(new THREE.ConeGeometry(0.95, 1.4, 4), hullMaterial);
+  bow.rotation.z = -Math.PI / 2;
+  bow.rotation.y = Math.PI / 4;
+  bow.position.set(3.3, 0.35, 0);
+  group.add(bow);
+
+  const deck = new THREE.Mesh(new THREE.BoxGeometry(4.6, 0.18, 1.45), deckMaterial);
+  deck.position.y = 0.82;
+  group.add(deck);
+
+  const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.35, 0.9, 1.15), cabinMaterial);
+  cabin.position.set(-0.8, 1.35, 0);
+  group.add(cabin);
+
+  const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.8, 10), mastMaterial);
+  mast.position.set(0.7, 1.85, 0);
+  group.add(mast);
+
+  applyShadow(group);
+  return group;
+}
