@@ -5,7 +5,6 @@ import { addLights } from "./src/world/lights.js";
 import { buildWorld } from "./src/world/buildWorld.js";
 import { updateSea } from "./src/world/sea.js";
 import { buildMissionZones } from "./src/world/missionZones.js";
-import { buildDronePaths } from "./src/drones/dronePaths.js";
 import { buildDroneFleet, updateDroneFleet } from "./src/drones/buildDroneFleet.js";
 import { setupAssetPlacement } from "./src/placeables/assetPlacement.js";
 import { buildDynamicObjects, updateDynamicObjects } from "./src/dynamicObjects/buildDynamicObjects.js";
@@ -22,8 +21,7 @@ const assetPlacement = setupAssetPlacement(viewer, world);
 const dynamicObjects = buildDynamicObjects(viewer.scene);
 const detectionState = { detections: [], eventLog: [] };
 
-const paths = buildDronePaths(viewer.scene);
-const drones = buildDroneFleet(viewer.scene, paths);
+const drones = buildDroneFleet(viewer.scene);
 const statePublisher = createSimulationStatePublisher({
   viewer,
   drones,
