@@ -16,7 +16,7 @@ const REGION_FILLS = [
 
 const REGION_LINES = ["#7fb3ff", "#ffc65c", "#ff7796", "#7dffb0"];
 const observedCells = new Set();
-const droneTrails = new Map();
+const droneHeadings = new Map();
 
 function worldToCanvas(canvas, x, z) {
   return {
@@ -90,16 +90,19 @@ function drawCoverageRegions(ctx, canvas, drones) {
   }
 }
 
-function updateTrail(drone) {
-  if (!droneTrails.has(drone.id)) droneTrails.set(drone.id, []);
-  const trail = droneTrails.get(drone.id);
-  const last = trail[trail.length - 1];
+function updateHeading(drone) {
+  const previous = droneHeadings.get(drone.id);
+  let angle = previous?.angle || 0;
 
-  if (!last || Math.abs(last.x - drone.x) > 0.6 || Math.abs(last.z - drone.z) > 0.6) {
-    trail.push({ x: drone.x, z: drone.z });
+  if (previous) {
+    const dx = drone.x - previous.x;
+    const dz = drone.z - previous.z;
+    if (Math.abs(dx) > 0.1 || Math.abs(dz) > 0.1) {
+      angle = Math.atan2(dz, dx);
+    }
   }
 
-  if (trail.length > 60) trail.shift();
+  droneHeadings.set(drone.id, { x: drone.x, z: drone.z, angle });
 }
 
 function markObserved(drones) {
@@ -135,26 +138,9 @@ function drawObserved(ctx, canvas) {
   });
 }
 
-function drawTrails(ctx, canvas) {
-  [...droneTrails.values()].forEach((trail, index) => {
-    if (trail.length < 2) return;
-    ctx.beginPath();
-    trail.forEach((point, pointIndex) => {
-      const p = worldToCanvas(canvas, point.x, point.z);
-      if (pointIndex === 0) ctx.moveTo(p.x, p.y);
-      else ctx.lineTo(p.x, p.y);
-    });
-    ctx.strokeStyle = REGION_LINES[index % REGION_LINES.length];
-    ctx.lineWidth = 2;
-    ctx.stroke();
-  });
-}
-
 function drawDrone(ctx, canvas, drone, index) {
   const p = worldToCanvas(canvas, drone.x, drone.z);
-  const trail = droneTrails.get(drone.id) || [];
-  const prevPoint = trail.length > 1 ? worldToCanvas(canvas, trail[trail.length - 2].x, trail[trail.length - 2].z) : p;
-  const angle = Math.atan2(p.y - prevPoint.y, p.x - prevPoint.x);
+  const angle = droneHeadings.get(drone.id)?.angle || 0;
 
   ctx.save();
   ctx.translate(p.x, p.y);
@@ -233,7 +219,7 @@ export function createGCSMiniMap() {
   const hint = document.createElement("div");
   hint.className = "empty-state";
   hint.style.marginTop = "10px";
-  hint.textContent = "Coverage is divided between UAVs by assigning each map cell to the nearest UAV. Colored cells show what each UAV has covered.";
+  hint.textContent = "Coverage is divided between UAVs by assigning each map cell to the nearest UAV. Colored cells show what each UAV has covered. Path trails are hidden for a cleaner map.";
 
   panel.appendChild(title);
   panel.appendChild(canvas);
@@ -246,13 +232,12 @@ export function createGCSMiniMap() {
 
   function update(state) {
     const drones = state.drones || [];
-    drones.forEach(updateTrail);
+    drones.forEach(updateHeading);
     markObserved(drones);
 
     drawBaseMap(ctx, canvas);
     drawCoverageRegions(ctx, canvas, drones);
     drawObserved(ctx, canvas);
-    drawTrails(ctx, canvas);
 
     drones.forEach((drone, index) => drawDrone(ctx, canvas, drone, index));
 
