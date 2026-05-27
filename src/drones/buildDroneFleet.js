@@ -42,14 +42,14 @@ function clampToRegion(position, region) {
 
 function chooseNewTarget(drone, elapsedTime) {
   drone.target = randomPointInRegion(drone.region);
-  drone.dwellUntil = elapsedTime + randomBetween(0.8, 2.2);
+  drone.dwellUntil = elapsedTime + randomBetween(1.2, 3.0);
 }
 
 export function buildDroneFleet(scene, paths) {
   const drones = [
-    makeDroneConfig(0, 0x0066ff, 9.0),
-    makeDroneConfig(1, 0xffaa00, 8.0),
-    makeDroneConfig(2, 0xff3333, 7.2)
+    makeDroneConfig(0, 0x0066ff, 3.8),
+    makeDroneConfig(1, 0xffaa00, 3.4),
+    makeDroneConfig(2, 0xff3333, 3.1)
   ];
 
   drones.forEach((drone) => {
