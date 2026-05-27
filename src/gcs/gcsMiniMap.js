@@ -7,112 +7,39 @@ const WORLD = {
   beachEndX: -22
 };
 
+const REGION_FILLS = [
+  "rgba(70,145,255,0.20)",
+  "rgba(255,184,65,0.20)",
+  "rgba(255,85,120,0.20)",
+  "rgba(120,255,170,0.20)"
+];
+
+const REGION_LINES = ["#7fb3ff", "#ffc65c", "#ff7796", "#7dffb0"];
 const observedCells = new Set();
 const droneTrails = new Map();
 
 function worldToCanvas(canvas, x, z) {
-  const px = ((x - WORLD.minX) / (WORLD.maxX - WORLD.minX)) * canvas.width;
-  const py = ((z - WORLD.minZ) / (WORLD.maxZ - WORLD.minZ)) * canvas.height;
-  return { x: px, y: py };
+  return {
+    x: ((x - WORLD.minX) / (WORLD.maxX - WORLD.minX)) * canvas.width,
+    y: ((z - WORLD.minZ) / (WORLD.maxZ - WORLD.minZ)) * canvas.height
+  };
 }
 
-function drawCircle(ctx, x, y, radius, color, label) {
-  ctx.beginPath();
-  ctx.arc(x, y, radius, 0, Math.PI * 2);
-  ctx.fillStyle = color;
-  ctx.fill();
+function nearestDroneIndex(x, z, drones) {
+  let bestIndex = 0;
+  let bestDistance = Number.POSITIVE_INFINITY;
 
-  if (label) {
-    ctx.fillStyle = "white";
-    ctx.font = "11px Arial";
-    ctx.fillText(label, x + 8, y - 8);
-  }
-}
-
-function drawDroneIcon(ctx, canvas, drone) {
-  const current = worldToCanvas(canvas, drone.x, drone.z);
-  const trail = droneTrails.get(drone.id) || [];
-  const previous = trail.length > 1 ? trail[trail.length - 2] : null;
-
-  let angle = 0;
-  if (previous) {
-    const prev = worldToCanvas(canvas, previous.x, previous.z);
-    angle = Math.atan2(current.y - prev.y, current.x - prev.x);
-  }
-
-  ctx.save();
-  ctx.translate(current.x, current.y);
-  ctx.rotate(angle);
-
-  ctx.beginPath();
-  ctx.moveTo(13, 0);
-  ctx.lineTo(-8, -8);
-  ctx.lineTo(-4, 0);
-  ctx.lineTo(-8, 8);
-  ctx.closePath();
-  ctx.fillStyle = "#ffffff";
-  ctx.fill();
-  ctx.strokeStyle = "rgba(0, 0, 0, 0.55)";
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  ctx.restore();
-
-  ctx.beginPath();
-  ctx.arc(current.x, current.y, 48, 0, Math.PI * 2);
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.24)";
-  ctx.lineWidth = 1.5;
-  ctx.stroke();
-
-  ctx.fillStyle = "white";
-  ctx.font = "bold 12px Arial";
-  ctx.fillText(drone.id, current.x + 12, current.y - 12);
-}
-
-function updateDroneTrail(drone) {
-  if (!droneTrails.has(drone.id)) droneTrails.set(drone.id, []);
-  const trail = droneTrails.get(drone.id);
-  const last = trail[trail.length - 1];
-
-  if (!last || Math.abs(last.x - drone.x) > 0.6 || Math.abs(last.z - drone.z) > 0.6) {
-    trail.push({ x: drone.x, z: drone.z });
-  }
-
-  if (trail.length > 60) trail.shift();
-}
-
-function drawDroneTrails(ctx, canvas) {
-  droneTrails.forEach((trail) => {
-    if (trail.length < 2) return;
-
-    ctx.beginPath();
-    trail.forEach((point, index) => {
-      const p = worldToCanvas(canvas, point.x, point.z);
-      if (index === 0) ctx.moveTo(p.x, p.y);
-      else ctx.lineTo(p.x, p.y);
-    });
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.55)";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-  });
-}
-
-function markObservedFromUavs(drones) {
-  drones.forEach((drone) => {
-    const radius = 14;
-    const cellSize = 4;
-
-    for (let x = drone.x - radius; x <= drone.x + radius; x += cellSize) {
-      for (let z = drone.z - radius; z <= drone.z + radius; z += cellSize) {
-        const dx = x - drone.x;
-        const dz = z - drone.z;
-        if (Math.sqrt(dx * dx + dz * dz) <= radius) {
-          const key = `${Math.round(x / cellSize) * cellSize},${Math.round(z / cellSize) * cellSize}`;
-          observedCells.add(key);
-        }
-      }
+  drones.forEach((drone, index) => {
+    const dx = x - drone.x;
+    const dz = z - drone.z;
+    const distance = dx * dx + dz * dz;
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      bestIndex = index;
     }
   });
+
+  return bestIndex;
 }
 
 function drawBaseMap(ctx, canvas) {
@@ -123,17 +50,14 @@ function drawBaseMap(ctx, canvas) {
 
   ctx.fillStyle = "#07111f";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  ctx.fillStyle = "rgba(30, 120, 185, 0.55)";
+  ctx.fillStyle = "rgba(30,120,185,0.55)";
   ctx.fillRect(0, 0, seaWidth, canvas.height);
-
-  ctx.fillStyle = "rgba(209, 187, 122, 0.55)";
+  ctx.fillStyle = "rgba(209,187,122,0.55)";
   ctx.fillRect(seaWidth, 0, beachWidth, canvas.height);
-
-  ctx.fillStyle = "rgba(45, 120, 65, 0.32)";
+  ctx.fillStyle = "rgba(45,120,65,0.32)";
   ctx.fillRect(seaWidth + beachWidth, 0, canvas.width - seaWidth - beachWidth, canvas.height);
 
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
+  ctx.strokeStyle = "rgba(255,255,255,0.08)";
   ctx.lineWidth = 1;
   for (let x = 0; x < canvas.width; x += 40) {
     ctx.beginPath();
@@ -149,37 +73,144 @@ function drawBaseMap(ctx, canvas) {
   }
 }
 
-function drawObservedCells(ctx, canvas) {
-  const cellSizeWorld = 4;
-  const cellW = (cellSizeWorld / (WORLD.maxX - WORLD.minX)) * canvas.width;
-  const cellH = (cellSizeWorld / (WORLD.maxZ - WORLD.minZ)) * canvas.height;
+function drawCoverageRegions(ctx, canvas, drones) {
+  if (drones.length === 0) return;
 
-  ctx.fillStyle = "rgba(90, 255, 150, 0.22)";
-  observedCells.forEach((key) => {
-    const [x, z] = key.split(",").map(Number);
-    const point = worldToCanvas(canvas, x, z);
-    ctx.fillRect(point.x - cellW / 2, point.y - cellH / 2, cellW, cellH);
+  const step = 4;
+  const cellW = (step / (WORLD.maxX - WORLD.minX)) * canvas.width;
+  const cellH = (step / (WORLD.maxZ - WORLD.minZ)) * canvas.height;
+
+  for (let x = WORLD.minX; x <= WORLD.maxX; x += step) {
+    for (let z = WORLD.minZ; z <= WORLD.maxZ; z += step) {
+      const owner = nearestDroneIndex(x, z, drones);
+      const p = worldToCanvas(canvas, x, z);
+      ctx.fillStyle = REGION_FILLS[owner % REGION_FILLS.length];
+      ctx.fillRect(p.x - cellW / 2, p.y - cellH / 2, cellW, cellH);
+    }
+  }
+}
+
+function updateTrail(drone) {
+  if (!droneTrails.has(drone.id)) droneTrails.set(drone.id, []);
+  const trail = droneTrails.get(drone.id);
+  const last = trail[trail.length - 1];
+
+  if (!last || Math.abs(last.x - drone.x) > 0.6 || Math.abs(last.z - drone.z) > 0.6) {
+    trail.push({ x: drone.x, z: drone.z });
+  }
+
+  if (trail.length > 60) trail.shift();
+}
+
+function markObserved(drones) {
+  const radius = 14;
+  const step = 4;
+
+  drones.forEach((drone) => {
+    for (let x = drone.x - radius; x <= drone.x + radius; x += step) {
+      for (let z = drone.z - radius; z <= drone.z + radius; z += step) {
+        const dx = x - drone.x;
+        const dz = z - drone.z;
+        if (Math.sqrt(dx * dx + dz * dz) <= radius) {
+          const owner = nearestDroneIndex(x, z, drones);
+          observedCells.add(`${Math.round(x / step) * step},${Math.round(z / step) * step},${owner}`);
+        }
+      }
+    }
   });
 }
 
+function drawObserved(ctx, canvas) {
+  const step = 4;
+  const cellW = (step / (WORLD.maxX - WORLD.minX)) * canvas.width;
+  const cellH = (step / (WORLD.maxZ - WORLD.minZ)) * canvas.height;
+
+  observedCells.forEach((key) => {
+    const [x, z, owner] = key.split(",").map(Number);
+    const p = worldToCanvas(canvas, x, z);
+    ctx.globalAlpha = 0.5;
+    ctx.fillStyle = REGION_LINES[owner % REGION_LINES.length];
+    ctx.fillRect(p.x - cellW / 2, p.y - cellH / 2, cellW, cellH);
+    ctx.globalAlpha = 1;
+  });
+}
+
+function drawTrails(ctx, canvas) {
+  [...droneTrails.values()].forEach((trail, index) => {
+    if (trail.length < 2) return;
+    ctx.beginPath();
+    trail.forEach((point, pointIndex) => {
+      const p = worldToCanvas(canvas, point.x, point.z);
+      if (pointIndex === 0) ctx.moveTo(p.x, p.y);
+      else ctx.lineTo(p.x, p.y);
+    });
+    ctx.strokeStyle = REGION_LINES[index % REGION_LINES.length];
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  });
+}
+
+function drawDrone(ctx, canvas, drone, index) {
+  const p = worldToCanvas(canvas, drone.x, drone.z);
+  const trail = droneTrails.get(drone.id) || [];
+  const prevPoint = trail.length > 1 ? worldToCanvas(canvas, trail[trail.length - 2].x, trail[trail.length - 2].z) : p;
+  const angle = Math.atan2(p.y - prevPoint.y, p.x - prevPoint.x);
+
+  ctx.save();
+  ctx.translate(p.x, p.y);
+  ctx.rotate(angle);
+  ctx.beginPath();
+  ctx.moveTo(13, 0);
+  ctx.lineTo(-8, -8);
+  ctx.lineTo(-4, 0);
+  ctx.lineTo(-8, 8);
+  ctx.closePath();
+  ctx.fillStyle = REGION_LINES[index % REGION_LINES.length];
+  ctx.fill();
+  ctx.strokeStyle = "rgba(0,0,0,0.6)";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.restore();
+
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, 48, 0, Math.PI * 2);
+  ctx.strokeStyle = REGION_LINES[index % REGION_LINES.length];
+  ctx.globalAlpha = 0.7;
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  ctx.fillStyle = "white";
+  ctx.font = "bold 12px Arial";
+  ctx.fillText(`${drone.id} / R${index + 1}`, p.x + 12, p.y - 12);
+}
+
+function drawPoint(ctx, canvas, item, color, label) {
+  const p = worldToCanvas(canvas, item.x, item.z);
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+  ctx.fillStyle = color;
+  ctx.fill();
+  ctx.fillStyle = "white";
+  ctx.font = "11px Arial";
+  ctx.fillText(label, p.x + 8, p.y - 8);
+}
+
 function drawLegend(ctx) {
-  const x = 14;
   let y = 20;
   ctx.font = "12px Arial";
-  ctx.fillStyle = "rgba(255, 255, 255, 0.86)";
-  ctx.fillText("Observed World Map", x, y);
+  ctx.fillStyle = "rgba(255,255,255,0.86)";
+  ctx.fillText("Observed World Map with Per-UAV Coverage Regions", 14, y);
   y += 18;
-  ctx.fillStyle = "#ffffff";
-  ctx.fillText("white arrow + trail = moving UAV", x, y);
+  ctx.fillText("Background split: nearest UAV owns that cell, like K-means/Voronoi partitioning.", 14, y);
   y += 18;
-  ctx.fillStyle = "rgba(90, 255, 150, 0.75)";
-  ctx.fillText("green cells = observed by UAV camera/FOV", x, y);
+  ctx.fillStyle = REGION_LINES[0];
+  ctx.fillText("blue = UAV-1", 14, y);
   y += 18;
-  ctx.fillStyle = "#4ba3ff";
-  ctx.fillText("blue = friendly detected asset", x, y);
+  ctx.fillStyle = REGION_LINES[1];
+  ctx.fillText("orange = UAV-2", 14, y);
   y += 18;
-  ctx.fillStyle = "#ff5b5b";
-  ctx.fillText("red = enemy detected asset", x, y);
+  ctx.fillStyle = REGION_LINES[2];
+  ctx.fillText("pink = UAV-3", 14, y);
 }
 
 export function createGCSMiniMap() {
@@ -202,7 +233,7 @@ export function createGCSMiniMap() {
   const hint = document.createElement("div");
   hint.className = "empty-state";
   hint.style.marginTop = "10px";
-  hint.textContent = "UAV arrows move live. White trails show recent motion. Green cells show the observed world being built from UAV coverage.";
+  hint.textContent = "Coverage is divided between UAVs by assigning each map cell to the nearest UAV. Colored cells show what each UAV has covered.";
 
   panel.appendChild(title);
   panel.appendChild(canvas);
@@ -215,26 +246,25 @@ export function createGCSMiniMap() {
 
   function update(state) {
     const drones = state.drones || [];
-    drones.forEach(updateDroneTrail);
-    markObservedFromUavs(drones);
+    drones.forEach(updateTrail);
+    markObserved(drones);
 
     drawBaseMap(ctx, canvas);
-    drawObservedCells(ctx, canvas);
-    drawDroneTrails(ctx, canvas);
+    drawCoverageRegions(ctx, canvas, drones);
+    drawObserved(ctx, canvas);
+    drawTrails(ctx, canvas);
 
-    drones.forEach((drone) => drawDroneIcon(ctx, canvas, drone));
+    drones.forEach((drone, index) => drawDrone(ctx, canvas, drone, index));
 
     (state.dynamicObjects || []).forEach((object) => {
-      const p = worldToCanvas(canvas, object.x, object.z);
-      drawCircle(ctx, p.x, p.y, 4, "#ffd166", object.label);
+      drawPoint(ctx, canvas, object, "#ffd166", object.label);
     });
 
     (state.placedAssets || [])
       .filter((asset) => asset.status === "DETECTED")
       .forEach((asset) => {
-        const p = worldToCanvas(canvas, asset.x, asset.z);
         const isRed = asset.side && asset.side.includes("RED");
-        drawCircle(ctx, p.x, p.y, 7, isRed ? "#ff4d4d" : "#4d8dff", asset.label);
+        drawPoint(ctx, canvas, asset, isRed ? "#ff4d4d" : "#4d8dff", asset.label);
       });
 
     drawLegend(ctx);
