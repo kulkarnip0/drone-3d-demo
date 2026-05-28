@@ -1,3 +1,4 @@
+import { createAIAssistPanel } from "./aiAssistPanel.js";
 import { createGCSMiniMap } from "./gcsMiniMap.js";
 
 function createRow(label, value) {
@@ -49,6 +50,7 @@ function updateMetric(id, value) {
 }
 
 export function startGCSDashboard() {
+  createAIAssistPanel();
   const miniMap = createGCSMiniMap();
   const channel = new BroadcastChannel("uav-mission-state");
   const connection = document.getElementById("connection-status");
@@ -108,7 +110,7 @@ export function startGCSDashboard() {
     const alertItems = [
       `Mission clock ${state.elapsedTime}s`,
       `${state.drones.length} UAVs active`,
-      `${state.dynamicObjects.length} moving ground objects tracked`
+      `${state.dynamicObjects.length} moving objects tracked`
     ];
 
     if (state.placedAssets.length > 0) {
@@ -117,6 +119,10 @@ export function startGCSDashboard() {
 
     if (state.detectionLog && state.detectionLog.length > 0) {
       state.detectionLog.slice(0, 8).forEach((entry) => {
+        if (entry.message) {
+          alertItems.push(`${entry.time} | ${entry.message}`);
+          return;
+        }
         const side = entry.side === "hostile" ? "RED/ENEMY" : "BLUE/FRIENDLY";
         alertItems.push(`${entry.time} | ${entry.seenBy} first saw ${side} ${entry.label} at X ${entry.x}, Z ${entry.z}. Priority ${entry.priority}.`);
       });
