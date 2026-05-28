@@ -10,6 +10,7 @@ import { setupAssetPlacement } from "./src/placeables/assetPlacement.js";
 import { buildDynamicObjects, updateDynamicObjects } from "./src/dynamicObjects/buildDynamicObjects.js";
 import { trackPlacedAssetsInDroneView } from "./src/sensors/fovAssetTracker.js";
 import { createSimulationStatePublisher } from "./src/state/simulationStatePublisher.js";
+import { setupSimulationCommandReceiver } from "./src/state/simulationCommandReceiver.js";
 
 const viewer = createViewer();
 const clock = new THREE.Clock();
@@ -29,6 +30,7 @@ const statePublisher = createSimulationStatePublisher({
   assetPlacement,
   detectionState
 });
+setupSimulationCommandReceiver({ drones, assetPlacement, detectionState });
 
 setupCameraSwitching(
   viewer,
