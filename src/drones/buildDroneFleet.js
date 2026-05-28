@@ -30,7 +30,8 @@ function makeDroneConfig(index, color, speed) {
     region,
     target: randomPointInRegion(region),
     dwellUntil: 0,
-    previousPosition: start.clone()
+    previousPosition: start.clone(),
+    assistTask: null
   };
 }
 
@@ -43,6 +44,46 @@ function clampToRegion(position, region) {
 function chooseNewTarget(drone, elapsedTime) {
   drone.target = randomPointInRegion(drone.region);
   drone.dwellUntil = elapsedTime + randomBetween(1.2, 3.0);
+}
+
+function moveToward(drone, target, speedScale = 1.0) {
+  const position = drone.mesh.position;
+  const direction = target.clone().sub(position);
+  const distance = direction.length();
+
+  if (distance > 0.001) {
+    direction.normalize();
+    const step = Math.min(distance, drone.speed * speedScale * 0.016);
+    drone.previousPosition.copy(position);
+    position.addScaledVector(direction, step);
+  }
+
+  const lookAhead = position.clone().add(direction.length() > 0 ? direction : new THREE.Vector3(1, 0, 0));
+  drone.mesh.lookAt(lookAhead);
+}
+
+function updateAssistTask(drone, elapsedTime) {
+  const task = drone.assistTask;
+  if (!task || !task.targetAsset) return false;
+
+  if (performance.now() > task.until) {
+    drone.assistTask = null;
+    return false;
+  }
+
+  const asset = task.targetAsset;
+  task.orbitAngle += 0.012;
+
+  const orbitRadius = 10;
+  const target = new THREE.Vector3(
+    asset.position.x + Math.cos(task.orbitAngle) * orbitRadius,
+    drone.region.altitude + 3,
+    asset.position.z + Math.sin(task.orbitAngle) * orbitRadius
+  );
+
+  moveToward(drone, target, 0.75);
+  drone.mesh.lookAt(asset.position.x, asset.position.y + 1.5, asset.position.z);
+  return true;
 }
 
 export function buildDroneFleet(scene, paths) {
@@ -63,6 +104,8 @@ export function buildDroneFleet(scene, paths) {
 
 export function updateDroneFleet(drones, elapsedTime) {
   drones.forEach((drone) => {
+    if (updateAssistTask(drone, elapsedTime)) return;
+
     const position = drone.mesh.position;
     const distanceToTarget = position.distanceTo(drone.target);
 
@@ -70,18 +113,7 @@ export function updateDroneFleet(drones, elapsedTime) {
       chooseNewTarget(drone, elapsedTime);
     }
 
-    const direction = drone.target.clone().sub(position);
-    const distance = direction.length();
-
-    if (distance > 0.001) {
-      direction.normalize();
-      const step = Math.min(distance, drone.speed * 0.016);
-      drone.previousPosition.copy(position);
-      position.addScaledVector(direction, step);
-      clampToRegion(position, drone.region);
-    }
-
-    const lookAhead = position.clone().add(direction.length() > 0 ? direction : new THREE.Vector3(1, 0, 0));
-    drone.mesh.lookAt(lookAhead);
+    moveToward(drone, drone.target, 1.0);
+    clampToRegion(position, drone.region);
   });
 }
