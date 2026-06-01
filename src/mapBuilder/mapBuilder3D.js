@@ -40,6 +40,7 @@ let droneGroup;
 let raycaster;
 let pointer;
 let selectedBox;
+let status;
 
 function terrainColor(x, z, height) {
   if (x < WORLD.coastX) return 0x1e78b9;
@@ -263,6 +264,34 @@ function updateStats(state) {
   document.getElementById("last-update").textContent = state.timestamp;
 }
 
+function resetMapBuilder() {
+  observedCells.clear();
+  reconstructedBuildings.clear();
+  assetMarkers.clear();
+  droneMarkers.clear();
+  selectableObjects.length = 0;
+
+  if (observedGroup) observedGroup.clear();
+  if (buildingGroup) buildingGroup.clear();
+  if (assetGroup) assetGroup.clear();
+  if (droneGroup) droneGroup.clear();
+  if (selectedBox) {
+    scene.remove(selectedBox);
+    selectedBox = null;
+  }
+
+  document.getElementById("observed-count").textContent = "0";
+  document.getElementById("detected-count").textContent = "0";
+  document.getElementById("threat-level").textContent = "-";
+  document.getElementById("last-update").textContent = "-";
+  document.getElementById("measurement-panel").textContent = "Map builder reset. Wait for UAV observations to rebuild the map from scratch.";
+
+  if (status) {
+    status.textContent = "WAITING FOR SIM";
+    status.className = "status-pill waiting";
+  }
+}
+
 function showMeasurement(info) {
   const panel = document.getElementById("measurement-panel");
   if (!panel || !info) return;
@@ -359,8 +388,35 @@ export function startMapBuilder3D() {
   animate();
 
   const channel = new BroadcastChannel("uav-mission-state");
-  const status = document.getElementById("connection-status");
+  const resetChannel = new BroadcastChannel("uav-reset-command");
+  status = document.getElementById("connection-status");
+  const resetButton = document.getElementById("reset-all-button");
   let lastMessageTime = 0;
+
+  function requestResetAll() {
+    resetChannel.postMessage({ type: "RESET_ALL", source: "map-builder", at: Date.now() });
+    resetMapBuilder();
+  }
+
+  if (resetButton) {
+    resetButton.addEventListener("click", requestResetAll);
+  }
+
+  window.addEventListener("keydown", (event) => {
+    const tagName = document.activeElement?.tagName?.toLowerCase();
+    if (tagName === "input" || tagName === "textarea" || document.activeElement?.isContentEditable) return;
+
+    if (event.key.toLowerCase() === "r") {
+      event.preventDefault();
+      requestResetAll();
+    }
+  });
+
+  resetChannel.onmessage = (event) => {
+    const message = event.data;
+    if (!message || message.type !== "RESET_ALL") return;
+    resetMapBuilder();
+  };
 
   channel.onmessage = (event) => {
     const state = event.data;
