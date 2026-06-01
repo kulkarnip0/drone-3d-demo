@@ -132,7 +132,7 @@
     <p>Modular world demo with terrain, sea, mission zones, drones, camera views, dynamic objects, placeable assets, and a separate GCS dashboard.</p>
     <div class="control-row">
       <a class="gcs-link" href="./gcs.html" target="_blank">Open GCS Dashboard</a>
-      <button class="reset-button" type="button" onclick="window.location.reload()">Reset Simulation</button>
+      <button class="reset-button" type="button" onclick="window.resetAllMissionViews ? window.resetAllMissionViews() : window.location.reload()">Reset All Views</button>
     </div>
   </div>
 
