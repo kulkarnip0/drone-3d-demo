@@ -110,7 +110,8 @@
       gap: 10px;
     }
 
-    .links a {
+    .links a,
+    .links button {
       color: #bff3ff;
       text-decoration: none;
       padding: 8px 11px;
@@ -119,6 +120,14 @@
       background: rgba(0, 190, 255, 0.14);
       font-size: 13px;
       font-weight: bold;
+      font-family: inherit;
+    }
+
+    .links button {
+      color: #ffe1b8;
+      border-color: rgba(255, 190, 100, 0.55);
+      background: rgba(255, 140, 0, 0.16);
+      cursor: pointer;
     }
   </style>
 
@@ -150,6 +159,7 @@
   <nav class="links">
     <a href="./index.html" target="_blank">Simulation</a>
     <a href="./gcs.html" target="_blank">GCS</a>
+    <button id="reset-all-button" type="button">Reset All Views</button>
   </nav>
 
   <script type="module">
