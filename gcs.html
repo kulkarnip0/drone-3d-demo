@@ -167,11 +167,23 @@
       font-size: 13px;
     }
 
-    .open-sim {
+    .open-sim,
+    .reset-all {
       color: #aee8ff;
       text-decoration: none;
       font-size: 13px;
       margin-left: 12px;
+    }
+
+    .reset-all {
+      border: 1px solid rgba(255, 190, 100, 0.55);
+      background: rgba(255, 140, 0, 0.16);
+      color: #ffe1b8;
+      padding: 7px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      font-family: inherit;
     }
 
     @media (max-width: 1000px) {
@@ -193,6 +205,7 @@
         <span id="connection-status" class="status-pill waiting">WAITING FOR SIM</span>
         <a class="open-sim" href="./index.html" target="_blank">Open Simulation</a>
         <a class="open-sim" href="./map-builder.html" target="_blank">Open 3D Map Builder</a>
+        <button id="reset-all-button" class="reset-all" type="button">Reset All Views</button>
       </div>
     </section>
 
