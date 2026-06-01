@@ -14,6 +14,30 @@ import { setupSimulationCommandReceiver } from "./src/state/simulationCommandRec
 
 const viewer = createViewer();
 const clock = new THREE.Clock();
+const resetChannel = new BroadcastChannel("uav-reset-command");
+
+function resetAllMissionViews() {
+  resetChannel.postMessage({ type: "RESET_ALL", source: "simulation", at: Date.now() });
+  window.location.reload();
+}
+
+window.resetAllMissionViews = resetAllMissionViews;
+
+resetChannel.onmessage = (event) => {
+  const message = event.data;
+  if (!message || message.type !== "RESET_ALL") return;
+  window.location.reload();
+};
+
+window.addEventListener("keydown", (event) => {
+  const tagName = document.activeElement?.tagName?.toLowerCase();
+  if (tagName === "input" || tagName === "textarea" || document.activeElement?.isContentEditable) return;
+
+  if (event.key.toLowerCase() === "r") {
+    event.preventDefault();
+    resetAllMissionViews();
+  }
+});
 
 addLights(viewer.scene);
 const world = buildWorld(viewer.scene);
