@@ -37,9 +37,16 @@
       margin: 0;
     }
 
-    .gcs-link {
-      display: inline-block;
+    .control-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
       margin-top: 10px;
+    }
+
+    .gcs-link,
+    .reset-button {
+      display: inline-block;
       padding: 7px 10px;
       color: #bff3ff;
       text-decoration: none;
@@ -48,6 +55,19 @@
       border-radius: 8px;
       font-size: 12px;
       font-weight: bold;
+    }
+
+    .reset-button {
+      color: #ffe1b8;
+      border-color: rgba(255, 190, 100, 0.55);
+      background: rgba(255, 140, 0, 0.16);
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .gcs-link:hover,
+    .reset-button:hover {
+      filter: brightness(1.2);
     }
 
     #asset-palette {
@@ -110,7 +130,10 @@
   <div id="info">
     <h1>Coastal UAV Mission Sandbox</h1>
     <p>Modular world demo with terrain, sea, mission zones, drones, camera views, dynamic objects, placeable assets, and a separate GCS dashboard.</p>
-    <a class="gcs-link" href="./gcs.html" target="_blank">Open GCS Dashboard</a>
+    <div class="control-row">
+      <a class="gcs-link" href="./gcs.html" target="_blank">Open GCS Dashboard</a>
+      <button class="reset-button" type="button" onclick="window.location.reload()">Reset Simulation</button>
+    </div>
   </div>
 
   <script type="module" src="./main.js"></script>
