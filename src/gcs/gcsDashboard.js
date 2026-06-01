@@ -49,17 +49,77 @@ function updateMetric(id, value) {
   if (element) element.textContent = value;
 }
 
-export function startGCSDashboard() {
-  createAIAssistPanel();
-  const miniMap = createGCSMiniMap();
-  const channel = new BroadcastChannel("uav-mission-state");
-  const connection = document.getElementById("connection-status");
+function resetDashboardUI() {
+  updateMetric("mission-name", "-");
+  updateMetric("mission-status", "-");
+  updateMetric("camera-mode", "-");
+  updateMetric("sim-time", "-");
+  updateMetric("uav-count", "0");
+  updateMetric("tracked-count", "0");
+  updateMetric("asset-count", "0");
+  updateMetric("threat-level", "-");
+  updateMetric("detected-count", "0");
+  updateMetric("last-update", "-");
+
   const droneList = document.getElementById("drone-list");
   const objectList = document.getElementById("object-list");
   const assetList = document.getElementById("asset-list");
   const alerts = document.getElementById("alerts");
 
+  if (droneList) renderTable(droneList, [], "No UAV telemetry yet.", []);
+  if (objectList) renderTable(objectList, [], "No moving objects reported.", []);
+  if (assetList) renderTable(assetList, [], "No assets placed yet.", []);
+  if (alerts) {
+    alerts.innerHTML = '<div class="empty-state">Simulation reset. Open or wait for the simulation tab to start receiving mission state.</div>';
+  }
+}
+
+export function startGCSDashboard() {
+  createAIAssistPanel();
+  const miniMap = createGCSMiniMap();
+  const channel = new BroadcastChannel("uav-mission-state");
+  const resetChannel = new BroadcastChannel("uav-reset-command");
+  const connection = document.getElementById("connection-status");
+  const droneList = document.getElementById("drone-list");
+  const objectList = document.getElementById("object-list");
+  const assetList = document.getElementById("asset-list");
+  const alerts = document.getElementById("alerts");
+  const resetButton = document.getElementById("reset-all-button");
+
   let lastMessageTime = 0;
+
+  function requestResetAll() {
+    resetChannel.postMessage({ type: "RESET_ALL", source: "gcs", at: Date.now() });
+    resetDashboardUI();
+    if (connection) {
+      connection.textContent = "WAITING FOR SIM";
+      connection.className = "status-pill waiting";
+    }
+  }
+
+  if (resetButton) {
+    resetButton.addEventListener("click", requestResetAll);
+  }
+
+  window.addEventListener("keydown", (event) => {
+    const tagName = document.activeElement?.tagName?.toLowerCase();
+    if (tagName === "input" || tagName === "textarea" || document.activeElement?.isContentEditable) return;
+
+    if (event.key.toLowerCase() === "r") {
+      event.preventDefault();
+      requestResetAll();
+    }
+  });
+
+  resetChannel.onmessage = (event) => {
+    const message = event.data;
+    if (!message || message.type !== "RESET_ALL") return;
+    resetDashboardUI();
+    if (connection) {
+      connection.textContent = "WAITING FOR SIM";
+      connection.className = "status-pill waiting";
+    }
+  };
 
   channel.onmessage = (event) => {
     const state = event.data;
