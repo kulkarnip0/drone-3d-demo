@@ -10,97 +10,113 @@
       --panel: rgba(15, 23, 42, 0.82);
       --panel2: rgba(30, 41, 59, 0.82);
       --text: #e5e7eb;
-      --muted: #a3aab8;
+      --muted: #a7b0c0;
       --blue: #38bdf8;
       --green: #34d399;
       --orange: #f59e0b;
       --purple: #a78bfa;
       --red: #fb7185;
-      --yellow: #fde047;
+      --yellow: #facc15;
       --border: #334155;
       --code: #020617;
     }
+
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
+
     body {
       margin: 0;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:
-        radial-gradient(circle at top left, rgba(56,189,248,0.24), transparent 34%),
-        radial-gradient(circle at top right, rgba(167,139,250,0.18), transparent 36%),
+        radial-gradient(circle at 20% 0%, rgba(56,189,248,0.22), transparent 30%),
+        radial-gradient(circle at 80% 10%, rgba(167,139,250,0.16), transparent 28%),
         linear-gradient(180deg, #0f172a 0%, var(--bg) 60%, #020617 100%);
       color: var(--text);
-      line-height: 1.6;
+      line-height: 1.62;
     }
+
     a { color: var(--blue); }
+
     header {
-      padding: 64px 24px 42px;
+      padding: 68px 24px 42px;
       text-align: center;
-      border-bottom: 1px solid rgba(148,163,184,0.2);
+      border-bottom: 1px solid rgba(148,163,184,0.22);
     }
+
     header h1 {
       margin: 0;
-      font-size: clamp(2rem, 5vw, 4.4rem);
-      line-height: 1.05;
+      font-size: clamp(2.2rem, 5.2vw, 4.6rem);
+      line-height: 1.03;
       letter-spacing: -0.05em;
     }
+
     header p {
-      max-width: 980px;
-      margin: 20px auto 0;
+      max-width: 960px;
+      margin: 22px auto 0;
       color: var(--muted);
-      font-size: 1.12rem;
+      font-size: 1.13rem;
     }
+
     main {
-      max-width: 1180px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 32px 20px 80px;
+      padding: 32px 20px 90px;
     }
+
     section {
       margin: 28px 0;
-      padding: 24px;
+      padding: 26px;
       border: 1px solid rgba(148,163,184,0.22);
-      border-radius: 22px;
+      border-radius: 24px;
       background: var(--panel);
-      box-shadow: 0 24px 70px rgba(0,0,0,0.30);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.28);
     }
-    h2 { margin: 0 0 14px; font-size: 1.7rem; }
+
+    h2 { margin-top: 0; font-size: 1.75rem; letter-spacing: -0.02em; }
     h3 { margin: 0 0 8px; }
-    p { margin-top: 0; }
+    p { color: #dbe3ee; }
+    .muted { color: var(--muted); }
+
     .toc a {
       display: inline-block;
       margin: 6px 8px 6px 0;
       padding: 8px 12px;
       border-radius: 999px;
-      background: rgba(2,6,23,0.45);
+      background: rgba(15,23,42,0.8);
       border: 1px solid var(--border);
       text-decoration: none;
     }
-    .hero-grid, .grid {
+
+    .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
       gap: 16px;
     }
+
     .card {
       padding: 18px;
       border: 1px solid rgba(148,163,184,0.22);
       border-radius: 18px;
-      background: linear-gradient(180deg, rgba(30,41,59,0.86), rgba(15,23,42,0.86));
+      background: linear-gradient(180deg, rgba(30,41,59,0.88), rgba(15,23,42,0.9));
     }
+
     .tag {
       display: inline-block;
       padding: 4px 10px;
       border-radius: 999px;
       background: rgba(56,189,248,0.12);
-      border: 1px solid rgba(56,189,248,0.34);
+      border: 1px solid rgba(56,189,248,0.3);
       color: var(--blue);
       font-size: 0.82rem;
       margin-bottom: 10px;
     }
+
     .tag.green { color: var(--green); border-color: rgba(52,211,153,0.35); background: rgba(52,211,153,0.12); }
     .tag.orange { color: var(--orange); border-color: rgba(245,158,11,0.35); background: rgba(245,158,11,0.12); }
     .tag.purple { color: var(--purple); border-color: rgba(167,139,250,0.35); background: rgba(167,139,250,0.12); }
     .tag.red { color: var(--red); border-color: rgba(251,113,133,0.35); background: rgba(251,113,133,0.12); }
-    .tag.yellow { color: var(--yellow); border-color: rgba(253,224,71,0.35); background: rgba(253,224,71,0.1); }
+    .tag.yellow { color: var(--yellow); border-color: rgba(250,204,21,0.35); background: rgba(250,204,21,0.12); }
+
     pre {
       overflow-x: auto;
       padding: 18px;
@@ -108,51 +124,125 @@
       border: 1px solid var(--border);
       background: var(--code);
       color: #d1d5db;
-      font-size: 0.93rem;
+      font-size: 0.92rem;
       line-height: 1.45;
     }
+
     code {
-      background: rgba(2,6,23,0.75);
+      background: rgba(2,6,23,0.8);
       padding: 2px 6px;
       border-radius: 6px;
       border: 1px solid rgba(148,163,184,0.18);
     }
-    .diagram {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      white-space: pre;
+
+    .flow {
+      display: grid;
+      gap: 12px;
     }
+
+    .flow-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .box {
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--panel2);
+      text-align: center;
+      min-height: 84px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .box span { color: var(--muted); font-size: 0.94rem; }
+    .arrow { color: var(--muted); font-size: 1.6rem; }
+    .blue { border-color: rgba(56,189,248,0.55); }
+    .green { border-color: rgba(52,211,153,0.55); }
+    .orange { border-color: rgba(245,158,11,0.55); }
+    .purple { border-color: rgba(167,139,250,0.55); }
+    .red { border-color: rgba(251,113,133,0.55); }
+    .yellow { border-color: rgba(250,204,21,0.55); }
+
     .note {
       border-left: 4px solid var(--orange);
       background: rgba(245,158,11,0.08);
       padding: 12px 16px;
-      border-radius: 12px;
+      border-radius: 10px;
       color: #fde68a;
     }
-    .two-col {
+
+    .hero-split {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 18px;
+      grid-template-columns: minmax(280px, 0.95fr) minmax(320px, 1.05fr);
+      gap: 22px;
+      align-items: center;
     }
+
+    .image-card {
+      padding: 16px;
+      border-radius: 22px;
+      border: 1px solid rgba(148,163,184,0.22);
+      background: rgba(2,6,23,0.44);
+    }
+
+    .image-card img {
+      width: 100%;
+      border-radius: 16px;
+      display: block;
+      background: #fff;
+    }
+
+    .caption {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .component-map {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .component {
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(148,163,184,0.22);
+      background: rgba(15,23,42,0.72);
+    }
+
+    .component strong { display: block; margin-bottom: 4px; }
+
     table {
       width: 100%;
       border-collapse: collapse;
       overflow: hidden;
       border-radius: 14px;
       border: 1px solid var(--border);
-      margin-top: 14px;
     }
+
     th, td {
       padding: 12px 14px;
       border-bottom: 1px solid var(--border);
       text-align: left;
       vertical-align: top;
     }
-    th { background: rgba(30,41,59,0.95); }
+
+    th { background: rgba(30,41,59,0.9); color: #f8fafc; }
     tr:last-child td { border-bottom: none; }
-    footer {
-      color: var(--muted);
-      text-align: center;
-      padding: 24px;
+
+    @media (max-width: 860px) {
+      .flow-row { grid-template-columns: 1fr; }
+      .arrow { transform: rotate(90deg); text-align: center; }
+      .hero-split { grid-template-columns: 1fr; }
+      section { padding: 18px; }
     }
   </style>
 </head>
@@ -160,9 +250,9 @@
   <header>
     <h1>Drone Autonomy Architecture Vision</h1>
     <p>
-      A web-openable concept document for imagining a drone swarm system: GCS, companion computer,
-      flight controller, networking, 3D world building, friendly/enemy assets, and future foundation-model reasoning.
-      This page is a vision guide first, and a code-demo guide second.
+      A visual, web-friendly guide for understanding how a drone autonomy stack fits together:
+      3D environment, friendly and enemy assets, GCS, networking, companion computer, flight controller,
+      MAVLink, simulation, and foundation-model assisted autonomy.
     </p>
   </header>
 
@@ -170,260 +260,260 @@
     <section class="toc">
       <h2>Quick navigation</h2>
       <a href="#vision">Vision</a>
-      <a href="#real-architecture">Real architecture</a>
-      <a href="#simulation-mapping">Simulation mapping</a>
+      <a href="#components">Drone components</a>
+      <a href="#system">System architecture</a>
       <a href="#networking">Networking</a>
-      <a href="#ai-stack">AI and foundation models</a>
+      <a href="#models">Foundation models</a>
       <a href="#environment">3D environment</a>
-      <a href="#assets">Friendly and enemy assets</a>
+      <a href="#assets">Friendly / enemy assets</a>
       <a href="#repo-role">Role of this repo</a>
       <a href="#roadmap">Roadmap</a>
     </section>
 
     <section id="vision">
-      <h2>1. What this project is trying to help visualize</h2>
+      <h2>1. What this demo is trying to help us envision</h2>
       <p>
-        The goal is not only to show a few animated drones. The larger goal is to build intuition for a realistic
-        autonomy stack: an operator at a Ground Control Station, one or more UAVs with flight controllers,
-        onboard companion computers, sensor payloads, communication links, mission-level intelligence, and a
-        3D operational environment containing friendly and adversarial assets.
+        This repository is not only a code demo. It is a visual sandbox for thinking about a complete drone autonomy system.
+        The goal is to slowly build intuition around how an operator, a GCS, companion computers, flight controllers,
+        drones, sensors, networking links, friendly assets, unknown assets, and enemy assets interact inside a mission environment.
       </p>
-      <div class="hero-grid">
-        <div class="card"><span class="tag">GCS</span><h3>Mission command</h3><p>The operator assigns intent: survey an area, track a target, inspect an asset, hold a perimeter, or return home.</p></div>
-        <div class="card"><span class="tag green">Companion</span><h3>Onboard autonomy</h3><p>A Jetson/Raspberry Pi/NUC-style computer runs local-agent logic, perception, object detection, and future foundation-model reasoning.</p></div>
-        <div class="card"><span class="tag orange">Flight controller</span><h3>Safe control</h3><p>Pixhawk/Cube/ArduPilot handles arming, EKF, modes, failsafes, stabilization, and motor outputs.</p></div>
-        <div class="card"><span class="tag purple">3D world</span><h3>Operational context</h3><p>The environment contains terrain, buildings, paths, vehicles, friendly units, enemy units, sensors, and map-building tools.</p></div>
+      <div class="flow">
+        <div class="flow-row">
+          <div class="box blue"><strong>3D Mission World</strong><span>terrain, buildings, roads, assets</span></div>
+          <div class="arrow">→</div>
+          <div class="box green"><strong>Drone Team</strong><span>friendly UAVs with sensors and tasks</span></div>
+          <div class="arrow">→</div>
+          <div class="box orange"><strong>Mission Understanding</strong><span>detection, tracking, planning, decisions</span></div>
+        </div>
+        <div class="flow-row">
+          <div class="box purple"><strong>GCS</strong><span>human supervision and command</span></div>
+          <div class="arrow">↔</div>
+          <div class="box yellow"><strong>Network</strong><span>MAVLink, telemetry, commands, video</span></div>
+          <div class="arrow">↔</div>
+          <div class="box red"><strong>Real / Sim Backend</strong><span>ArduPilot, SITL, Gazebo, hardware</span></div>
+        </div>
       </div>
     </section>
 
-    <section id="real-architecture">
-      <h2>2. Real-world architecture</h2>
-      <p>In real hardware, the AI planner should not directly control motors. It should send high-level commands to a flight controller through MAVLink.</p>
-      <pre class="diagram">
-                 ┌──────────────────────────────┐
-                 │ Ground Control Station / GCS  │
-                 │ mission planning, monitoring  │
-                 │ operator decisions, map UI    │
-                 └──────────────┬───────────────┘
-                                │ secure radio / Wi-Fi / LTE / mesh
-                                │ high-level mission goals
-                                ▼
-        ┌─────────────────────────────────────────────────┐
-        │ UAV onboard companion computer                   │
-        │ Jetson / Raspberry Pi / NUC                      │
-        │                                                 │
-        │ local-agent  +  perception  +  AI reasoning      │
-        │ YOLO / tracking / VLM / tactical assistant       │
-        └──────────────┬──────────────────────────────────┘
-                       │ MAVLink over USB / UART / UDP
-                       ▼
-        ┌─────────────────────────────────────────────────┐
-        │ Flight controller                               │
-        │ Pixhawk / Cube running ArduPilot                 │
-        │                                                 │
-        │ EKF, arming, modes, failsafes, motor control     │
-        └──────────────┬──────────────────────────────────┘
-                       │ PWM / DShot / actuator outputs
-                       ▼
-                 ┌─────────────┐
-                 │ Drone body  │
-                 │ motors, ESC │
-                 │ sensors     │
-                 └─────────────┘
+    <section id="components">
+      <h2>2. Drone components: from picture to autonomy stack</h2>
+      <div class="hero-split">
+        <div class="image-card">
+          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Drone%20Diagram.jpg" alt="Wikimedia Commons drone component diagram" />
+          <div class="caption">
+            Image source: Wikimedia Commons, <a href="https://commons.wikimedia.org/wiki/File:Drone_Diagram.jpg">Drone Diagram.jpg</a>, author Glosome. Used here as a component reference for learning and architecture explanation.
+          </div>
+        </div>
+        <div>
+          <p>
+            A quadcopter can be understood as several layers. The physical drone has motors, propellers, frame,
+            battery, camera, sensors, and radio links. The autonomy system adds a flight controller, companion computer,
+            network protocol, mission logic, perception models, and a GCS.
+          </p>
+          <pre>
+Physical drone
+  frame + arms + propellers + motors + battery
+
+Flight-control layer
+  flight controller + IMU + GPS + barometer + RC/MAVLink
+
+Autonomy layer
+  companion computer + perception + planning + safety monitor
+
+Operator layer
+  GCS + map + telemetry + mission commands
+          </pre>
+        </div>
+      </div>
+
+      <div class="component-map">
+        <div class="component"><span class="tag green">Lift</span><strong>Propellers + motors</strong>Convert motor commands into thrust. The flight controller changes motor speeds to roll, pitch, yaw, climb, descend, and stabilize.</div>
+        <div class="component"><span class="tag orange">Power</span><strong>Battery + power board</strong>Supplies energy to motors, flight controller, companion computer, sensors, and communication modules.</div>
+        <div class="component"><span class="tag blue">Control</span><strong>Flight controller</strong>Runs ArduPilot/PX4-style control loops, stabilization, estimator, modes, failsafes, and motor mixing.</div>
+        <div class="component"><span class="tag purple">Autonomy</span><strong>Companion computer</strong>Runs higher-level Python/ROS/AI logic: perception, tracking, mission reasoning, task allocation, and MAVLink commands.</div>
+        <div class="component"><span class="tag red">Sensing</span><strong>Camera / payload / GPS / IMU</strong>Provides measurements for navigation and understanding: pose, altitude, visual detections, object tracking, and map updates.</div>
+        <div class="component"><span class="tag yellow">Communication</span><strong>Telemetry radio / Wi-Fi / LTE</strong>Connects drone to GCS and swarm peers. Carries heartbeat, telemetry, mission commands, video, and AI summaries.</div>
+      </div>
+    </section>
+
+    <section id="system">
+      <h2>3. Core system architecture</h2>
+      <p>
+        The clean architecture separates the safety-critical flight controller from the higher-level autonomy logic.
+        The companion computer should not directly drive motors. It should send mission-level commands through MAVLink.
+      </p>
+      <pre>
+Human Operator
+   │
+   ▼
+Ground Control Station / GCS
+   │  mission, map, tasking, telemetry, video
+   │
+   ▼
+Network Layer
+   │  MAVLink / UDP / serial / radio / Wi-Fi / LTE
+   │
+   ▼
+Companion Computer
+   │  perception, foundation models, tracking, planning, safety supervisor
+   │
+   ▼
+Flight Controller
+   │  ArduPilot modes, EKF, stabilization, failsafes, motor control
+   │
+   ▼
+Drone Hardware
+      motors, ESCs, propellers, sensors, camera, battery
       </pre>
       <div class="note">
-        Design rule: the companion computer decides <strong>what should be done</strong>; ArduPilot decides <strong>how to fly safely</strong>.
+        Mental model: the flight controller is the safety-critical pilot. The companion computer is the mission brain.
+        The GCS is the human-facing command and visualization layer.
       </div>
-    </section>
-
-    <section id="simulation-mapping">
-      <h2>3. How this maps to simulation</h2>
-      <p>The same architecture can be approximated on a laptop by replacing real hardware with simulation blocks.</p>
-      <table>
-        <tr><th>Real system</th><th>Simulation equivalent</th><th>Purpose</th></tr>
-        <tr><td>Real drone body</td><td>Gazebo drone model</td><td>Physics, sensors, motion, collision, environment interaction</td></tr>
-        <tr><td>Pixhawk/Cube flight controller</td><td>ArduPilot SITL</td><td>Same autopilot logic, modes, arming checks, MAVLink behavior</td></tr>
-        <tr><td>Companion computer</td><td>Docker container or Multipass VM</td><td>Runs local-agent, perception, reasoning, mission execution</td></tr>
-        <tr><td>GCS laptop</td><td>Browser GCS / dashboard</td><td>Shows state, environment, commands, alerts, mission planning</td></tr>
-        <tr><td>Radio / Wi-Fi / LTE</td><td>UDP/TCP/WebSocket links</td><td>Communication path between modules</td></tr>
-      </table>
-      <pre class="diagram">
-Browser 3D GCS / this repo
-       ▲
-       │ WebSocket / REST state stream in future
-       │
-Backend bridge / mission server
-       ▲
-       │ MAVLink telemetry + commands
-       │
-Companion VM or container
-       ▲
-       │ MAVLink
-       │
-ArduPilot SITL  ───── simulator plugin ───── Gazebo world
-      </pre>
     </section>
 
     <section id="networking">
-      <h2>4. Communication and networking picture</h2>
-      <p>The system has different communication layers. Keeping them separate makes the architecture easier to debug.</p>
+      <h2>4. Networking and message flow</h2>
       <div class="grid">
-        <div class="card"><span class="tag">MAVLink</span><h3>Companion ↔ flight controller</h3><p>Heartbeat, mode change, arm/disarm, telemetry, mission commands, guided setpoints, command ACK.</p></div>
-        <div class="card"><span class="tag green">Swarm link</span><h3>GCS ↔ UAVs</h3><p>Mission assignment, swarm health, role changes, target reports, emergency actions.</p></div>
-        <div class="card"><span class="tag orange">Web state</span><h3>Backend ↔ browser</h3><p>Drone pose, paths, detections, alerts, map edits, asset state. Good future fit: WebSocket.</p></div>
-        <div class="card"><span class="tag purple">Simulator link</span><h3>SITL ↔ Gazebo</h3><p>Motor outputs and simulated sensor/physics state. This is not the same as MAVLink.</p></div>
+        <div class="card"><span class="tag blue">MAVLink</span><h3>Command and telemetry language</h3><p>Used for heartbeat, modes, arm/disarm, position targets, mission commands, status text, battery, GPS, and vehicle state.</p></div>
+        <div class="card"><span class="tag green">UDP / Serial</span><h3>Transport pipe</h3><p>In simulation, MAVLink often goes over UDP ports. On real drones, it may go over USB, serial telemetry radio, Wi-Fi, or LTE.</p></div>
+        <div class="card"><span class="tag orange">Router</span><h3>Multi-client distribution</h3><p>A MAVLink router can forward one vehicle stream to GCS, logger, local agent, and monitoring tools.</p></div>
+        <div class="card"><span class="tag purple">Swarm network</span><h3>Many drones, many links</h3><p>Each drone needs identity, endpoint, telemetry stream, safety policy, and command permissions.</p></div>
       </div>
-      <pre class="diagram">
-GCS / browser UI
-   │
-   ├── WebSocket/REST: visualization state, commands, map edits
-   │
-Mission backend / bridge
-   │
-   ├── MAVLink UDP: telemetry and high-level commands
-   │
-Companion computer or agent
-   │
-   ├── MAVLink USB/UART/UDP
-   │
-Flight controller / ArduPilot
+      <pre>
+Simulation example
+  GCS / Browser frontend
+      ↕ WebSocket / REST
+  Backend bridge
+      ↕ MAVLink UDP
+  ArduPilot SITL
+      ↕ Gazebo plugin
+  Gazebo drone model
+
+Real example
+  GCS laptop
+      ↕ telemetry radio / Wi-Fi / LTE
+  Companion computer
+      ↕ MAVLink serial/UDP
+  Flight controller
+      ↕ PWM/DShot/CAN
+  Motors and sensors
       </pre>
     </section>
 
-    <section id="ai-stack">
-      <h2>5. AI and foundation-model layer</h2>
+    <section id="models">
+      <h2>5. Foundation models and AI role</h2>
       <p>
-        Foundation models should not be placed in the low-level flight-control loop. They are better used for semantic understanding,
-        mission reasoning, report generation, and operator assistance.
+        Foundation models should not replace the low-level flight controller. They are better used for perception,
+        semantic understanding, mission reasoning, and operator assistance.
       </p>
-      <div class="two-col">
-        <div class="card">
-          <span class="tag green">On companion computer</span>
-          <h3>Local autonomy and perception</h3>
-          <ul>
-            <li>YOLO / RT-DETR object detection from drone camera.</li>
-            <li>Tracking of vehicles, persons, friendly units, and suspicious objects.</li>
-            <li>Lightweight VLM for scene understanding on Jetson-class hardware.</li>
-            <li>Local safety rules: land, hold, avoid, report, return.</li>
-          </ul>
-        </div>
-        <div class="card">
-          <span class="tag purple">At GCS or mission server</span>
-          <h3>Higher-level reasoning</h3>
-          <ul>
-            <li>Natural-language mission planning.</li>
-            <li>Area division among drones.</li>
-            <li>Threat/friendly asset interpretation.</li>
-            <li>Summary: what happened, what was detected, what is risky.</li>
-          </ul>
-        </div>
-      </div>
-      <pre class="diagram">
-Camera frame / simulated view
-        │
-        ▼
-Object detector: person, vehicle, friendly marker, enemy marker
-        │
-        ▼
-Tracker + map memory
-        │
-        ▼
-Foundation model / mission reasoner
-        │
-        ├── "This object looks like a moving vehicle near restricted zone."
-        ├── "UAV 2 should inspect from east side."
-        └── "Report to GCS and keep safe altitude."
-        │
-        ▼
-Planner converts decision to safe high-level action
-        │
-        ▼
-MAVLink command to ArduPilot
+      <table>
+        <thead><tr><th>Layer</th><th>What AI can do</th><th>What should remain safety-controlled</th></tr></thead>
+        <tbody>
+          <tr><td>Perception</td><td>Detect vehicles, humans, buildings, roads, landing zones, obstacles, friendly/enemy assets.</td><td>Raw motor stabilization and failsafe control.</td></tr>
+          <tr><td>Semantic map</td><td>Convert visual detections into map annotations and object tracks.</td><td>Estimator and core navigation integrity.</td></tr>
+          <tr><td>Planning</td><td>Suggest search paths, inspection priorities, asset classification, threat avoidance corridors.</td><td>Geofence, RTL, LAND, collision safety, flight envelope limits.</td></tr>
+          <tr><td>GCS assistant</td><td>Explain mission status: “Drone 2 sees unknown vehicle near sector B.”</td><td>Final safety authority and emergency response.</td></tr>
+        </tbody>
+      </table>
+      <pre>
+Camera / sensors
+   ↓
+Perception model
+   ↓
+Detections + tracks
+   ↓
+Semantic world model
+   ↓
+Planner / AI assistant
+   ↓
+Safe MAVLink commands
+   ↓
+Flight controller
       </pre>
     </section>
 
     <section id="environment">
-      <h2>6. 3D environment-building vision</h2>
+      <h2>6. 3D environment building</h2>
       <p>
-        The 3D world should slowly evolve from a simple browser scene into an operational map where assets, sensors,
-        routes, detections, and missions can be placed and replayed.
+        The browser demo can slowly grow into a mission-design environment. Start simple: place terrain, roads,
+        buildings, friendly assets, unknown objects, enemy assets, and drone paths. Later, connect these objects to live
+        simulation or real-world telemetry.
       </p>
       <div class="grid">
-        <div class="card"><span class="tag">Terrain</span><h3>Base world</h3><p>Ground, roads, buildings, landing zones, restricted areas, safe corridors.</p></div>
-        <div class="card"><span class="tag green">Map builder</span><h3>Editable scene</h3><p>Place objects, draw patrol areas, create waypoints, mark danger regions.</p></div>
-        <div class="card"><span class="tag orange">Sensor view</span><h3>FOV and coverage</h3><p>Show drone camera cone, detection zone, blind spots, and overlap between drones.</p></div>
-        <div class="card"><span class="tag purple">Mission replay</span><h3>Timeline</h3><p>Replay drone paths, detections, commands, failures, and operator decisions.</p></div>
+        <div class="card"><span class="tag green">Terrain</span><h3>World base</h3><p>Ground plane, hills, map tiles, roads, landing zones, no-fly zones.</p></div>
+        <div class="card"><span class="tag blue">Placeables</span><h3>Interactive assets</h3><p>User can place trucks, bases, towers, buildings, markers, obstacles, and mission points.</p></div>
+        <div class="card"><span class="tag orange">Drone FOV</span><h3>Sensor visualization</h3><p>Show what a drone camera can see and which objects are inside its view cone.</p></div>
+        <div class="card"><span class="tag purple">Scenario design</span><h3>Training and demos</h3><p>Create “find object”, “inspect convoy”, “protect base”, or “map unknown area” scenarios.</p></div>
       </div>
     </section>
 
     <section id="assets">
-      <h2>7. Friendly and enemy asset modelling</h2>
+      <h2>7. Friendly, unknown, and enemy asset model</h2>
       <p>
-        A useful demo needs operational meaning. Assets should not be just decorative models; they should carry identity, role,
-        state, intent, and relationship to the mission.
+        For a useful demo, every object in the 3D world should have a semantic role. The GCS should not only show shapes;
+        it should show operational meaning.
       </p>
-      <table>
-        <tr><th>Asset type</th><th>Examples</th><th>State to visualize</th></tr>
-        <tr><td>Friendly assets</td><td>own UAVs, ground team, safe vehicle, base station</td><td>location, health, role, assigned mission, communication status</td></tr>
-        <tr><td>Unknown assets</td><td>unclassified person, unknown vehicle, moving object</td><td>detection confidence, track history, inspection priority</td></tr>
-        <tr><td>Enemy/adversarial assets</td><td>hostile vehicle, jammer zone, restricted outpost, threat marker</td><td>threat level, sensor visibility, proximity to friendly units</td></tr>
-        <tr><td>Environment assets</td><td>buildings, roads, trees, obstacles, landing pad</td><td>collision risk, line of sight, navigability, occlusion</td></tr>
-      </table>
-      <pre class="diagram">
-Asset memory model
+      <pre>
+Asset types
+  FRIENDLY
+    own drones, own base, protected vehicles, safe landing zone
 
-asset_id
-asset_type: friendly | unknown | adversarial | environment
-position: x, y, z
-velocity: vx, vy, vz
-confidence: 0..1
-last_seen_time
-seen_by: UAV-0, UAV-2
-mission_label: inspect | avoid | protect | track | ignore
+  UNKNOWN
+    unidentified vehicle, person, temporary structure, new object
+
+  ENEMY / THREAT
+    hostile vehicle, jammer, restricted zone, suspected launcher, hostile drone
+
+  NEUTRAL
+    civilian vehicle, building, road infrastructure, trees, poles
       </pre>
+      <div class="grid">
+        <div class="card"><span class="tag green">Friendly</span><h3>Known safe objects</h3><p>Rendered with clear identity, health, role, team color, assigned mission, and protection priority.</p></div>
+        <div class="card"><span class="tag yellow">Unknown</span><h3>Needs classification</h3><p>Tracked by the system but not yet classified. Good place for AI-assist and human confirmation.</p></div>
+        <div class="card"><span class="tag red">Enemy / threat</span><h3>Risk source</h3><p>Used for route avoidance, alerting, tracking, and mission replanning.</p></div>
+        <div class="card"><span class="tag blue">Mission object</span><h3>Task anchor</h3><p>Inspection point, waypoint, search grid, relay point, pickup/drop zone, or observation sector.</p></div>
+      </div>
     </section>
 
     <section id="repo-role">
       <h2>8. Role of this repository</h2>
       <p>
-        This repository can act as the visual and interaction layer. It does not need to contain all backend autonomy code.
-        Instead, it can become the web-facing interface for understanding and demonstrating the complete drone autonomy system.
+        <code>drone-3d-demo</code> should be treated as the web visualization and concept layer. It can remain useful even before
+        the backend is complete because it helps people see the system architecture and mission behavior.
       </p>
-      <div class="grid">
-        <div class="card"><span class="tag">Now</span><h3>Browser demo</h3><p>3D drone visualization, map building, simple paths, FOV, dashboard, and AI-assist UI.</p></div>
-        <div class="card"><span class="tag green">Next</span><h3>State-driven frontend</h3><p>Accept live JSON state from a backend: drone poses, detections, missions, alerts.</p></div>
-        <div class="card"><span class="tag orange">Later</span><h3>Connected GCS</h3><p>Send operator commands to a backend bridge that talks MAVLink to SITL or real vehicles.</p></div>
-        <div class="card"><span class="tag purple">Final vision</span><h3>Autonomy cockpit</h3><p>Visualize swarm reasoning, foundation-model suggestions, friendly/enemy assets, and mission state.</p></div>
-      </div>
-      <pre class="diagram">
+      <pre>
 drone-3d-demo
-  = browser GCS + 3D visualization + map/asset editor
+  purpose:
+    browser 3D environment
+    visual GCS concept
+    map builder
+    asset placement
+    drone FOV visualization
+    friendly / enemy / unknown asset model
+    future frontend for live swarm telemetry
 
 ardupilot-swarm-sim
-  = Gazebo + ArduPilot SITL + MAVLink + local-agent + companion simulation
-
-Future bridge
-  = WebSocket/REST service between both worlds
+  purpose:
+    Gazebo + ArduPilot SITL
+    MAVLink control
+    companion-computer agents
+    swarm planner
+    networking experiments
+    bridge to real hardware
       </pre>
     </section>
 
     <section id="roadmap">
-      <h2>9. Suggested development roadmap</h2>
-      <table>
-        <tr><th>Stage</th><th>Goal</th><th>Visible demo</th></tr>
-        <tr><td>1</td><td>Static architecture and asset visualization</td><td>3D scene with friendly/enemy/unknown markers and drone FOV</td></tr>
-        <tr><td>2</td><td>State-driven simulation</td><td>Frontend receives JSON state and updates drone positions live</td></tr>
-        <tr><td>3</td><td>Backend bridge</td><td>ArduPilot SITL telemetry appears in browser GCS</td></tr>
-        <tr><td>4</td><td>Companion-agent simulation</td><td>Each UAV has a simulated companion VM/container running local-agent</td></tr>
-        <tr><td>5</td><td>AI perception layer</td><td>Detections from simulated/real camera shown as map assets</td></tr>
-        <tr><td>6</td><td>Foundation-model assistant</td><td>GCS explains mission state and suggests safe high-level actions</td></tr>
-        <tr><td>7</td><td>Real hardware migration</td><td>Replace SITL with Pixhawk/Cube and companion VM with Jetson/RPi</td></tr>
-      </table>
+      <h2>9. Roadmap from demo to real system</h2>
+      <div class="grid">
+        <div class="card"><span class="tag">Step 1</span><h3>Static visual world</h3><p>Build terrain, drone models, friendly/enemy assets, and camera/FOV visualization.</p></div>
+        <div class="card"><span class="tag green">Step 2</span><h3>Interactive mission design</h3><p>Allow operator to create waypoints, place objects, assign asset labels, and simulate detections.</p></div>
+        <div class="card"><span class="tag blue">Step 3</span><h3>Backend bridge</h3><p>Connect web frontend to a local backend through WebSocket or REST.</p></div>
+        <div class="card"><span class="tag orange">Step 4</span><h3>SITL integration</h3><p>Stream ArduPilot/Gazebo drone position and status into the web view.</p></div>
+        <div class="card"><span class="tag purple">Step 5</span><h3>AI-assisted perception</h3><p>Use detections and semantic labels to update the map and explain mission status.</p></div>
+        <div class="card"><span class="tag red">Step 6</span><h3>Real hardware path</h3><p>Replace SITL endpoints with real companion computers and flight controllers while keeping the same GCS concept.</p></div>
+      </div>
     </section>
   </main>
-
-  <footer>
-    Drone Autonomy Architecture Vision · GCS + Companion Computer + Flight Controller + 3D World + AI Reasoning
-  </footer>
 </body>
 </html>
