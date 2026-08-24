@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Drone 3D Demo Architecture</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel2: #1f2937;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --blue: #38bdf8;
+      --green: #34d399;
+      --orange: #f59e0b;
+      --purple: #a78bfa;
+      --red: #fb7185;
+      --border: #334155;
+      --code: #020617;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0, var(--bg) 45%, #020617 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color: var(--blue); }
+
+    header {
+      padding: 56px 24px 36px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 1.05;
+    }
+
+    header p {
+      max-width: 900px;
+      margin: 20px auto 0;
+      color: var(--muted);
+      font-size: 1.1rem;
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+
+    section {
+      margin: 28px 0;
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: rgba(15, 23, 42, 0.72);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 1.65rem;
+    }
+
+    h3 { margin-bottom: 8px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(31,41,55,0.9), rgba(17,24,39,0.9));
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(56,189,248,0.12);
+      border: 1px solid rgba(56,189,248,0.3);
+      color: var(--blue);
+      font-size: 0.82rem;
+      margin-bottom: 10px;
+    }
+
+    .tag.green { color: var(--green); border-color: rgba(52,211,153,0.35); background: rgba(52,211,153,0.12); }
+    .tag.orange { color: var(--orange); border-color: rgba(245,158,11,0.35); background: rgba(245,158,11,0.12); }
+    .tag.purple { color: var(--purple); border-color: rgba(167,139,250,0.35); background: rgba(167,139,250,0.12); }
+
+    pre {
+      overflow-x: auto;
+      padding: 18px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--code);
+      color: #d1d5db;
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    code {
+      background: rgba(2,6,23,0.8);
+      padding: 2px 6px;
+      border-radius: 6px;
+      border: 1px solid rgba(148,163,184,0.18);
+    }
+
+    ul { padding-left: 1.2rem; }
+
+    .flow {
+      display: grid;
+      gap: 12px;
+    }
+
+    .flow-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .box {
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--panel2);
+      text-align: center;
+      min-height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .arrow { color: var(--muted); font-size: 1.6rem; }
+
+    .blue { border-color: rgba(56,189,248,0.5); }
+    .green { border-color: rgba(52,211,153,0.5); }
+    .orange { border-color: rgba(245,158,11,0.5); }
+    .purple { border-color: rgba(167,139,250,0.5); }
+    .red { border-color: rgba(251,113,133,0.5); }
+
+    .note {
+      border-left: 4px solid var(--orange);
+      background: rgba(245,158,11,0.08);
+      padding: 12px 16px;
+      border-radius: 10px;
+      color: #fde68a;
+    }
+
+    .toc a {
+      display: inline-block;
+      margin: 6px 8px 6px 0;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.8);
+      border: 1px solid var(--border);
+      text-decoration: none;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+    }
+
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th { background: rgba(30,41,59,0.9); color: #f8fafc; }
+    tr:last-child td { border-bottom: none; }
+
+    @media (max-width: 760px) {
+      .flow-row { grid-template-columns: 1fr; }
+      .arrow { transform: rotate(90deg); text-align: center; }
+      section { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Drone 3D Demo Architecture</h1>
+    <p>
+      A web-friendly architecture guide for the <code>drone-3d-demo</code> repository.
+      This project is a browser-based 3D drone visualization, GCS dashboard, map builder, sensor/FOV demo, and state-driven simulation frontend.
+    </p>
+  </header>
+
+  <main>
+    <section class="toc">
+      <h2>Quick navigation</h2>
+      <a href="#big-picture">Big picture</a>
+      <a href="#folder-structure">Folder structure</a>
+      <a href="#runtime-flow">Runtime flow</a>
+      <a href="#modules">Module meaning</a>
+      <a href="#state">State and commands</a>
+      <a href="#future-backend">Future backend connection</a>
+    </section>
+
+    <section id="big-picture">
+      <h2>1. Big-picture architecture</h2>
+      <p>
+        The repository is mainly a <strong>frontend simulation and visualization layer</strong>. It is not the real ArduPilot/Gazebo SITL backend. It can later become a web GCS frontend that receives live state from a backend and displays drones, paths, map assets, sensor fields of view, and AI-assist information.
+      </p>
+
+      <pre>
+Browser / Web App
+│
+├── index.html              Main 3D drone demo
+├── gcs.html                Ground Control Station dashboard
+├── map-builder.html        Interactive 3D map builder
+│
+└── src/
+    ├── core/               Viewer, camera, scene setup
+    ├── world/              World/terrain/scene objects
+    ├── drones/             Drone models, fleet, paths
+    ├── sensors/            FOV and detection simulation
+    ├── dynamicObjects/     Moving land objects / targets
+    ├── placeables/         User-placeable assets
+    ├── state/              State publish / command receive layer
+    ├── gcs/                Dashboard, minimap, AI assist panel
+    └── mapBuilder/         3D map editing tools
+      </pre>
+
+      <div class="flow">
+        <div class="flow-row">
+          <div class="box blue"><strong>HTML Entry Pages</strong><span>index, GCS, map builder</span></div>
+          <div class="arrow">→</div>
+          <div class="box green"><strong>3D Viewer</strong><span>scene, camera, controls</span></div>
+          <div class="arrow">→</div>
+          <div class="box orange"><strong>Simulation Objects</strong><span>drones, terrain, assets</span></div>
+        </div>
+        <div class="flow-row">
+          <div class="box purple"><strong>State Layer</strong><span>publish state, receive commands</span></div>
+          <div class="arrow">→</div>
+          <div class="box blue"><strong>GCS UI</strong><span>dashboard, minimap, AI panel</span></div>
+          <div class="arrow">→</div>
+          <div class="box green"><strong>User Decisions</strong><span>inspect, command, plan</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="folder-structure">
+      <h2>2. Repository folder structure</h2>
+      <pre>
+drone-3d-demo/
+├── .github/
+│   └── workflows/
+│       ├── deploy-pages.yml
+│       └── static.yml
+│
+├── README.md
+├── package.json
+├── index.html
+├── gcs.html
+├── map-builder.html
+├── main.js
+│
+├── docs/
+│   ├── index.html              This architecture page
+│   └── NEXT_STEPS.md
+│
+└── src/
+    ├── core/
+    │   ├── cameraControls.js
+    │   └── createViewer.js
+    │
+    ├── drones/
+    │   ├── buildDroneFleet.js
+    │   ├── createDrone.js
+    │   └── dronePaths.js
+    │
+    ├── dynamicObjects/
+    │   ├── buildDynamicObjects.js
+    │   ├── createLandObjects.js
+    │   └── landObjectPaths.js
+    │
+    ├── gcs/
+    │   ├── aiAssistPanel.js
+    │   ├── gcsDashboard.js
+    │   └── gcsMiniMap.js
+    │
+    ├── mapBuilder/
+    │   └── mapBuilder3D.js
+    │
+    ├── placeables/
+    │   ├── assetPalette.js
+    │   ├── assetPlacement.js
+    │   └── createPlaceableAssets.js
+    │
+    ├── sensors/
+    │   ├── droneFovDetection.js
+    │   └── fovAssetTracker.js
+    │
+    ├── state/
+    │   ├── simulationCommandReceiver.js
+    │   └── simulationStatePublisher.js
+    │
+    └── world/
+        └── world and terrain scene modules
+      </pre>
+    </section>
+
+    <section id="runtime-flow">
+      <h2>3. Runtime flow</h2>
+      <p>The frontend follows this general flow when the demo starts:</p>
+
+      <div class="flow">
+        <div class="flow-row">
+          <div class="box blue"><strong>1. Open page</strong><span>index.html / gcs.html / map-builder.html</span></div>
+          <div class="arrow">→</div>
+          <div class="box green"><strong>2. Create viewer</strong><span>scene, camera, renderer, controls</span></div>
+          <div class="arrow">→</div>
+          <div class="box orange"><strong>3. Build world</strong><span>terrain, grid, land objects</span></div>
+        </div>
+        <div class="flow-row">
+          <div class="box purple"><strong>4. Build drone fleet</strong><span>drone meshes and paths</span></div>
+          <div class="arrow">→</div>
+          <div class="box red"><strong>5. Simulate sensors</strong><span>FOV detection and tracking</span></div>
+          <div class="arrow">→</div>
+          <div class="box blue"><strong>6. Update UI</strong><span>GCS dashboard and minimap</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="modules">
+      <h2>4. Module meaning</h2>
+      <div class="grid">
+        <div class="card">
+          <span class="tag">core</span>
+          <h3>Viewer and controls</h3>
+          <p><code>src/core</code> owns the 3D viewer creation and camera controls. This is the foundation used by the demo, GCS, and map builder pages.</p>
+        </div>
+        <div class="card">
+          <span class="tag green">drones</span>
+          <h3>Drone fleet</h3>
+          <p><code>src/drones</code> creates drone objects, builds a fleet, and provides paths that drones can follow inside the browser demo.</p>
+        </div>
+        <div class="card">
+          <span class="tag orange">sensors</span>
+          <h3>FOV and detection</h3>
+          <p><code>src/sensors</code> handles drone field-of-view detection and tracks which assets are visible or detected by a drone sensor cone.</p>
+        </div>
+        <div class="card">
+          <span class="tag purple">gcs</span>
+          <h3>Ground station UI</h3>
+          <p><code>src/gcs</code> contains the dashboard, minimap, and AI-assist panel. This is the operator-facing part of the demo.</p>
+        </div>
+        <div class="card">
+          <span class="tag">mapBuilder</span>
+          <h3>Map editor</h3>
+          <p><code>src/mapBuilder</code> is for building or editing the 3D map/world. It works with placeable assets.</p>
+        </div>
+        <div class="card">
+          <span class="tag green">state</span>
+          <h3>State bridge</h3>
+          <p><code>src/state</code> is the future integration point for connecting frontend visualization to a backend simulator or live drone state stream.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="state">
+      <h2>5. State and command concept</h2>
+      <p>
+        The clean design is to keep the frontend independent from the real flight controller. The browser should receive high-level state and send high-level commands, not talk directly to motors or ArduPilot internals.
+      </p>
+
+      <pre>
+Frontend GCS / Browser
+  receives:
+    drone position
+    drone heading
+    path / mission state
+    sensor detections
+    health / battery / warning state
+
+  sends:
+    start mission
+    pause mission
+    select drone
+    inspect area
+    create waypoint
+    assign task
+      </pre>
+
+      <div class="note">
+        Recommended rule: the web demo should remain a visualization and operator layer. Flight-control commands should go through a backend that validates safety and talks MAVLink to ArduPilot.
+      </div>
+    </section>
+
+    <section id="future-backend">
+      <h2>6. How this can connect to ArduPilot / Gazebo later</h2>
+      <p>
+        Your second repo, <code>ardupilot-swarm-sim</code>, is the better place for Gazebo, ArduPilot SITL, Docker, MAVLink, companion-agent, and planner code. This <code>drone-3d-demo</code> repo can become the web visualization/GCS layer.
+      </p>
+
+      <pre>
+Realistic future architecture
+
+Browser GCS: drone-3d-demo
+    │
+    │ WebSocket / REST
+    ▼
+Backend bridge: ardupilot-swarm-sim
+    │
+    │ MAVLink UDP/serial
+    ▼
+ArduPilot SITL or real Pixhawk
+    │
+    │ Simulator plugin / motor outputs
+    ▼
+Gazebo drone or real drone
+      </pre>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>Repository / module</th>
+            <th>Responsibility</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Web GCS</td>
+            <td><code>drone-3d-demo</code></td>
+            <td>3D visualization, map builder, dashboard, AI-assist panel, operator interactions.</td>
+          </tr>
+          <tr>
+            <td>Backend bridge</td>
+            <td><code>ardupilot-swarm-sim</code></td>
+            <td>Receives frontend commands, validates them, publishes live state, and talks MAVLink.</td>
+          </tr>
+          <tr>
+            <td>Autopilot</td>
+            <td>ArduPilot SITL / Pixhawk</td>
+            <td>Arming, modes, EKF, failsafes, attitude control, navigation, motor control.</td>
+          </tr>
+          <tr>
+            <td>Physical world</td>
+            <td>Gazebo / real drone</td>
+            <td>Physics, sensors, camera imagery, movement, collisions, environment.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>7. Suggested next improvements</h2>
+      <ul>
+        <li>Add a simple WebSocket client in <code>src/state</code> to receive live drone state.</li>
+        <li>Define a JSON state schema for drones, detections, commands, and mission status.</li>
+        <li>Add a backend bridge in <code>ardupilot-swarm-sim</code> that converts MAVLink telemetry to frontend-friendly JSON.</li>
+        <li>Keep browser commands high-level: waypoint, inspect, hold, land, return, not raw throttle.</li>
+        <li>Use the GCS dashboard as the operator view and the map builder as the mission-design view.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
