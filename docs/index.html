@@ -16,7 +16,7 @@
 <main>
   <section class="toc">
     <h2>Quick navigation</h2>
-    <a href="#vision">Vision</a><a href="#architecture">Architecture</a><a href="#edge-model">Edge foundation model</a><a href="#aerial-scene">Aerial scene understanding</a><a href="#assets">Friendly / enemy assets</a><a href="#simulation">3D simulation path</a><a href="#safety">Safety boundary</a>
+    <a href="#vision">Vision</a><a href="#architecture">Architecture</a><a href="#edge-model">Edge foundation model</a><a href="#aerial-scene">Aerial scene understanding</a><a href="#belief-state">Belief state</a><a href="#assets">Friendly / enemy assets</a><a href="#simulation">3D simulation path</a><a href="#safety">Safety boundary</a>
   </section>
 
   <section id="vision">
@@ -74,6 +74,19 @@
       <div class="card"><span class="tag orange">Dynamic assets</span><p>Vehicles on the road or parked near the road. In a mission setting these become trackable objects.</p></div>
       <div class="card"><span class="tag purple">Mission meaning</span><p>Where can a drone observe? Where is occlusion? Which road segment or asset needs inspection?</p></div>
     </div>
+    <h3>Human-readable scene abstraction</h3>
+    <pre>                 TOP-DOWN AERIAL VIEW
+┌────────────────────────────────────────────┐
+│ Buildings / roofs        Trees / vegetation │
+│                                            │
+│        │  vertical road corridor  │         │
+│        │  lane markings + cars    │         │
+│────────┼──────────────────────────┼────────│
+│        │     intersection         │         │
+│        │ crosswalk / stop lines   │         │
+│────────┼──────────────────────────┼────────│
+│ Parking / open area     Building blocks     │
+└────────────────────────────────────────────┘</pre>
     <pre>camera image
   → semantic perception
   → road / vehicle / building / tree / open area labels
@@ -82,8 +95,55 @@
   → GCS visualization + MAVLink task command</pre>
   </section>
 
+  <section id="belief-state">
+    <h2>5. Belief state from the drone</h2>
+    <p>The edge model should not only detect objects. It should maintain a belief state: a structured, uncertain understanding of the world built from current sensor observations, prior map knowledge, and mission context.</p>
+    <pre>Drone observation at time t
+  camera_frame: aerial intersection
+  pose_estimate: altitude + heading + GPS/local position
+  mission_context: inspect road junction and identify assets
+
+BeliefState(t):
+  static_map:
+    road_corridor_vertical:    confidence 0.94
+    cross_road:                confidence 0.88
+    intersection_center:       confidence 0.91
+    buildings_or_roofs:        confidence 0.86
+    trees_or_vegetation:       confidence 0.93
+    parking_or_open_area:      confidence 0.78
+
+  dynamic_objects:
+    vehicle_1: class=car, state=parked_or_slow, confidence 0.82
+    vehicle_2: class=car, state=parked,         confidence 0.76
+    unknown_asset_region: near_intersection,    confidence 0.55
+
+  tactical_labels:
+    friendly_assets: none_confirmed
+    enemy_assets:    none_confirmed
+    unknown_assets:  vehicles require classification
+    occluded_zones:  tree-covered road edges
+
+  recommended_next_action:
+    move_to_observation_waypoint
+    look_down_at_intersection
+    classify vehicles before assigning threat label
+    report semantic map to GCS</pre>
+    <div class="grid">
+      <div class="card"><span class="tag green">What is known</span><p>Road structure, intersection geometry, trees, buildings, open areas, and visible vehicles.</p></div>
+      <div class="card"><span class="tag orange">What is uncertain</span><p>Vehicle intent, friendly/enemy identity, occluded regions under trees, and whether a road segment is blocked.</p></div>
+      <div class="card"><span class="tag purple">What the model should do</span><p>Ask for more observation, change viewpoint, classify assets, update the semantic map, and send a safe high-level command.</p></div>
+    </div>
+    <pre>Pixels are not enough.
+The drone needs:
+  perception  → what objects are visible?
+  geometry    → where are they in the local map?
+  belief      → how confident are we?
+  mission     → what matters now?
+  action      → what should the drone do next?</pre>
+  </section>
+
   <section id="assets">
-    <h2>5. Friendly, unknown, and enemy assets</h2>
+    <h2>6. Friendly, unknown, and enemy assets</h2>
     <p>The 3D environment should slowly evolve from a simple visual demo into a mission sandbox. Assets can be placed in the scene, observed by drone FOV, classified by the model, and shown on the GCS.</p>
     <p><span class="pill">Friendly drone</span><span class="pill">Friendly ground vehicle</span><span class="pill">Unknown vehicle</span><span class="pill">Enemy asset</span><span class="pill">Blocked road</span><span class="pill">Safe landing zone</span><span class="pill">No-fly region</span></p>
     <pre>3D environment builder
@@ -95,7 +155,7 @@
   </section>
 
   <section id="simulation">
-    <h2>6. How this web demo connects to real simulation</h2>
+    <h2>7. How this web demo connects to real simulation</h2>
     <p><code>drone-3d-demo</code> can be the visual and conceptual GCS layer. <code>ardupilot-swarm-sim</code> can provide realistic backend dynamics through Gazebo, ArduPilot SITL, and MAVLink.</p>
     <pre>drone-3d-demo web page
   ⇄ WebSocket / REST state bridge
@@ -107,7 +167,7 @@ ArduPilot SITL / flight controller
   </section>
 
   <section id="safety">
-    <h2>7. Safety boundary</h2>
+    <h2>8. Safety boundary</h2>
     <p>The autonomy model should not replace the flight controller. The safe split is:</p>
     <div class="grid">
       <div class="card"><span class="tag purple">Foundation model</span><p>Understands scene, mission, assets, risk, and intent. Produces high-level task or waypoint suggestions.</p></div>
