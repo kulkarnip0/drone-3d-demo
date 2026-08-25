@@ -5,34 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Drone Autonomy Architecture Vision</title>
   <style>
-    :root{
-      --bg:#07111f;--panel:#0f1b2d;--panel2:#13243b;--text:#e6eef8;--muted:#a9b8cc;
-      --blue:#38bdf8;--green:#34d399;--orange:#f59e0b;--purple:#a78bfa;--red:#fb7185;
-      --border:#2c405c;--code:#020617;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top,#1e3a5f 0,var(--bg) 42%,#020617 100%);color:var(--text);line-height:1.65}
-    a{color:var(--blue)}
-    header{padding:64px 22px 42px;text-align:center;border-bottom:1px solid var(--border)}
-    header h1{margin:0;font-size:clamp(2.1rem,5vw,4.6rem);line-height:1.05}
-    header p{max-width:980px;margin:20px auto 0;color:var(--muted);font-size:1.12rem}
-    main{max-width:1180px;margin:0 auto;padding:34px 20px 84px}
-    section{margin:28px 0;padding:24px;border:1px solid var(--border);border-radius:22px;background:rgba(15,27,45,.78);box-shadow:0 20px 60px rgba(0,0,0,.28)}
-    h2{margin-top:0;font-size:1.75rem} h3{margin-bottom:8px}
-    .toc a{display:inline-block;margin:6px 8px 6px 0;padding:8px 12px;border-radius:999px;background:rgba(2,6,23,.55);border:1px solid var(--border);text-decoration:none}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
-    .card{padding:18px;border:1px solid var(--border);border-radius:18px;background:linear-gradient(180deg,rgba(19,36,59,.95),rgba(10,20,35,.95))}
-    .tag{display:inline-block;padding:4px 10px;border-radius:999px;background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.35);color:var(--blue);font-size:.82rem;margin-bottom:8px}
-    .tag.green{color:var(--green);border-color:rgba(52,211,153,.45)} .tag.orange{color:var(--orange);border-color:rgba(245,158,11,.45)} .tag.purple{color:var(--purple);border-color:rgba(167,139,250,.45)} .tag.red{color:var(--red);border-color:rgba(251,113,133,.45)}
-    pre{overflow-x:auto;padding:18px;border-radius:16px;border:1px solid var(--border);background:var(--code);color:#d1d5db;font-size:.92rem;line-height:1.48}
-    code{background:rgba(2,6,23,.85);padding:2px 6px;border-radius:6px;border:1px solid rgba(148,163,184,.18)}
-    .flow{display:grid;gap:12px}.row{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:center}
-    .box{padding:15px;border-radius:15px;border:1px solid var(--border);background:var(--panel2);text-align:center;min-height:82px;display:flex;align-items:center;justify-content:center;flex-direction:column}
-    .arrow{color:var(--muted);font-size:1.6rem}.bluebox{border-color:rgba(56,189,248,.55)}.greenbox{border-color:rgba(52,211,153,.55)}.orangebox{border-color:rgba(245,158,11,.55)}.purplebox{border-color:rgba(167,139,250,.55)}.redbox{border-color:rgba(251,113,133,.55)}
-    figure{margin:0}.scene{width:100%;max-height:560px;object-fit:cover;border-radius:18px;border:1px solid var(--border);box-shadow:0 20px 50px rgba(0,0,0,.35)}
-    .component-img{width:100%;max-width:900px;display:block;margin:0 auto;border-radius:18px;border:1px solid var(--border);background:#fff;box-shadow:0 20px 50px rgba(0,0,0,.35)}
-    figcaption{color:var(--muted);font-size:.9rem;margin-top:8px}.note{border-left:4px solid var(--orange);background:rgba(245,158,11,.09);padding:13px 16px;border-radius:12px;color:#fde68a}
-    .pill{display:inline-block;padding:4px 9px;border-radius:999px;border:1px solid var(--border);background:rgba(2,6,23,.45);margin:3px;color:#dbeafe}
+    :root{--bg:#07111f;--panel:#0f1b2d;--panel2:#13243b;--text:#e6eef8;--muted:#a9b8cc;--blue:#38bdf8;--green:#34d399;--orange:#f59e0b;--purple:#a78bfa;--red:#fb7185;--border:#2c405c;--code:#020617}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top,#1e3a5f 0,var(--bg) 42%,#020617 100%);color:var(--text);line-height:1.65}
+    header{padding:64px 22px 42px;text-align:center;border-bottom:1px solid var(--border)} header h1{margin:0;font-size:clamp(2.1rem,5vw,4.5rem);line-height:1.05} header p{max-width:980px;margin:20px auto 0;color:var(--muted);font-size:1.12rem}
+    main{max-width:1180px;margin:0 auto;padding:34px 20px 84px} section{margin:28px 0;padding:24px;border:1px solid var(--border);border-radius:22px;background:rgba(15,27,45,.82);box-shadow:0 20px 60px rgba(0,0,0,.28)}
+    h2{margin-top:0;font-size:1.75rem} h3{margin-bottom:8px} a{color:var(--blue)} .toc a{display:inline-block;margin:6px 8px 6px 0;padding:8px 12px;border-radius:999px;background:rgba(2,6,23,.55);border:1px solid var(--border);text-decoration:none}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}.card{padding:18px;border:1px solid var(--border);border-radius:18px;background:linear-gradient(180deg,rgba(19,36,59,.95),rgba(10,20,35,.95))}
+    .tag{display:inline-block;padding:4px 10px;border-radius:999px;background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.35);color:var(--blue);font-size:.82rem;margin-bottom:8px}.green{color:var(--green);border-color:rgba(52,211,153,.45)}.orange{color:var(--orange);border-color:rgba(245,158,11,.45)}.purple{color:var(--purple);border-color:rgba(167,139,250,.45)}.red{color:var(--red);border-color:rgba(251,113,133,.45)}
+    pre{overflow-x:auto;padding:18px;border-radius:16px;border:1px solid var(--border);background:var(--code);color:#d1d5db;font-size:.92rem;line-height:1.48} code{background:rgba(2,6,23,.85);padding:2px 6px;border-radius:6px;border:1px solid rgba(148,163,184,.18)}
+    .row{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:center}.box{padding:15px;border-radius:15px;border:1px solid var(--border);background:var(--panel2);text-align:center;min-height:82px;display:flex;align-items:center;justify-content:center;flex-direction:column}.arrow{color:var(--muted);font-size:1.6rem}.bluebox{border-color:rgba(56,189,248,.55)}.greenbox{border-color:rgba(52,211,153,.55)}.orangebox{border-color:rgba(245,158,11,.55)}.purplebox{border-color:rgba(167,139,250,.55)}.redbox{border-color:rgba(251,113,133,.55)}
+    figure{margin:0}.scene{width:100%;max-height:560px;object-fit:cover;border-radius:18px;border:1px solid var(--border);box-shadow:0 20px 50px rgba(0,0,0,.35)}figcaption{color:var(--muted);font-size:.9rem;margin-top:8px}.note{border-left:4px solid var(--orange);background:rgba(245,158,11,.09);padding:13px 16px;border-radius:12px;color:#fde68a}.pill{display:inline-block;padding:4px 9px;border-radius:999px;border:1px solid var(--border);background:rgba(2,6,23,.45);margin:3px;color:#dbeafe}
     @media(max-width:760px){.row{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center}section{padding:18px}}
   </style>
 </head>
@@ -40,132 +22,144 @@
   <header>
     <h1>Drone Autonomy Architecture Vision</h1>
     <p>
-      A mission-specific autonomy stack where the GCS gives intent, the edge companion computer runs perception and reasoning,
-      the flight controller executes safe low-level control, and a 3D environment helps us design, explain, and test the mission.
+      This page explains the intended architecture behind the drone demo: a browser GCS, a drone companion computer,
+      a safety-critical flight controller, mission-specific edge foundation models, realistic 3D environments, and friendly / unknown / enemy asset reasoning.
     </p>
   </header>
 
   <main>
     <section class="toc">
       <h2>Quick navigation</h2>
-      <a href="#vision">Core vision</a>
-      <a href="#components">Drone components</a>
-      <a href="#architecture">GCS + companion + flight controller</a>
-      <a href="#edge-foundation">Foundation model on the edge</a>
+      <a href="#vision">Vision</a>
+      <a href="#architecture">GCS / Companion / Flight Controller</a>
+      <a href="#components">Drone component showcase</a>
+      <a href="#edge-foundation">Mission-specific edge foundation model</a>
       <a href="#aerial-scene">Aerial scene understanding</a>
-      <a href="#belief-state">Belief state</a>
-      <a href="#networking">Networking</a>
-      <a href="#simulation">Simulation path</a>
+      <a href="#belief-state">Belief state from drone</a>
+      <a href="#public-3d-vision">Public 3D vision example</a>
       <a href="#roadmap">Roadmap</a>
     </section>
 
     <section id="vision">
-      <h2>1. Core vision</h2>
+      <h2>1. Vision: putting intelligence on the edge</h2>
       <p>
-        The idea is not only to show a code demo. The larger idea is to build a mental and technical bridge from a browser 3D demo
-        to a real drone autonomy system. A mission-specific foundation model can be fine-tuned or distilled and placed on the
-        drone's companion computer. The model understands scene context, mission rules, friendly assets, unknown assets, possible threats,
-        and tactical intent. The flight controller remains responsible for safe attitude, stabilization, arming, landing, failsafe, and motor control.
+        The core idea is not only to make a 3D code demo. The larger idea is to train or adapt a
+        <strong>mission-specific foundation model</strong> and place it on the drone companion computer / edge device.
+        The GCS gives intent. The edge model understands the local scene and mission context. The flight controller executes safe low-level motion.
       </p>
-      <pre>Mission intent from GCS
+      <pre>
+Mission intent from GCS
         ↓
 Mission-specific foundation model on companion computer
         ↓
 Scene understanding + belief state + task decision
         ↓
-MAVLink command to ArduPilot / flight controller
+MAVLink commands / waypoints / inspection tasks
         ↓
-Safe low-level flight execution
+ArduPilot flight controller
         ↓
-Telemetry + detections + belief update back to GCS</pre>
-    </section>
-
-    <section id="components">
-      <h2>2. Drone component showcase</h2>
-      <figure>
-        <img class="component-img"
-             src="https://commons.wikimedia.org/wiki/Special:FilePath/Drone_Diagram.jpg?width=1000"
-             alt="Diagram of common quadcopter drone components including propellers, motors, battery, camera, GPS, ESC, and radio receiver"
-             referrerpolicy="no-referrer" />
-        <figcaption>
-          Component diagram from Wikimedia Commons: <em>Drone Diagram.jpg</em> by Glosome, licensed under CC BY-SA 4.0.
-          Used here as an educational reference for drone architecture.
-        </figcaption>
-      </figure>
-
-      <div class="grid" style="margin-top:18px">
-        <div class="card"><span class="tag green">flight controller</span><h3>Safety-critical control</h3><p>Runs ArduPilot/PX4-style logic: estimator, modes, arming, stabilization, failsafes, landing, RTL, and motor outputs.</p></div>
-        <div class="card"><span class="tag purple">companion computer</span><h3>Edge intelligence</h3><p>Runs mission logic, perception models, foundation-model reasoning, object tracking, route selection, and MAVLink command generation.</p></div>
-        <div class="card"><span class="tag orange">motors + ESCs</span><h3>Physical actuation</h3><p>Convert flight-controller outputs into thrust. The autonomy stack should never directly bypass the safety controller to command motors.</p></div>
-        <div class="card"><span class="tag">sensors</span><h3>World observation</h3><p>Camera, IMU, GPS, barometer, compass, range sensors, and optional depth/LiDAR provide the raw information needed for local belief.</p></div>
-        <div class="card"><span class="tag red">communication</span><h3>Network link</h3><p>Radio, Wi-Fi, LTE, mesh, or tactical datalink connects drone, GCS, and swarm peers with varying latency and reliability.</p></div>
-        <div class="card"><span class="tag green">power</span><h3>Battery budget</h3><p>The foundation model must respect power, heat, and compute limits. Edge autonomy must be mission-specific, efficient, and safety-aware.</p></div>
+Motors, sensors, safe flight execution
+      </pre>
+      <div class="note">
+        Key principle: the foundation model should not directly spin motors. It should reason about scene, mission, risks and tasks.
+        The flight controller remains responsible for stabilization, failsafes, arming checks, landing, RTL and safe low-level control.
       </div>
     </section>
 
     <section id="architecture">
-      <h2>3. GCS, companion computer, and flight controller</h2>
-      <div class="flow">
-        <div class="row">
-          <div class="box bluebox"><strong>Ground Control Station</strong><span>mission intent, map, operator view</span></div>
-          <div class="arrow">⇄</div>
-          <div class="box purplebox"><strong>Companion Computer</strong><span>edge AI, planner, perception, task logic</span></div>
-          <div class="arrow">⇄</div>
-          <div class="box greenbox"><strong>Flight Controller</strong><span>ArduPilot/PX4, estimator, modes, motors</span></div>
-        </div>
+      <h2>2. GCS, companion computer and flight controller</h2>
+      <div class="row">
+        <div class="box bluebox"><strong>GCS / Web dashboard</strong><span>operator intent, map, mission monitoring, asset labels</span></div>
+        <div class="arrow">→</div>
+        <div class="box greenbox"><strong>Companion computer</strong><span>edge model, perception, local planning, belief state</span></div>
+        <div class="arrow">→</div>
+        <div class="box orangebox"><strong>Flight controller</strong><span>ArduPilot, EKF, modes, failsafes, motor output</span></div>
       </div>
-      <pre>GCS:
-  - operator intent
-  - mission map
-  - friendly/enemy/unknown asset view
-  - override and safety supervision
+      <pre>
+Browser GCS
+  ├─ mission command: inspect sector A
+  ├─ display: drone state, detections, asset confidence
+  └─ operator decisions
 
-Companion computer:
-  - foundation model / VLM / detector / tracker
-  - local belief state
-  - route and task decisions
-  - MAVLink commands
+Companion computer / edge AI
+  ├─ camera + sensor interpretation
+  ├─ mission-specific foundation model
+  ├─ belief-state update
+  ├─ local route/task decision
+  └─ MAVLink command generation
 
-Flight controller:
-  - attitude stabilization
-  - position control
-  - failsafes
-  - motor mixing
-  - safe landing / RTL</pre>
+Flight controller
+  ├─ arming, modes, EKF, GPS/baro/IMU fusion
+  ├─ GUIDED/AUTO/LAND/RTL execution
+  └─ low-level attitude + motor control
+      </pre>
+    </section>
+
+    <section id="components">
+      <h2>3. Drone component showcase</h2>
+      <p>
+        A real drone autonomy stack is easier to understand when the physical drone is mapped to software roles.
+      </p>
+      <figure>
+        <img class="scene" src="https://commons.wikimedia.org/wiki/Special:FilePath/Drone_Diagram.jpg?width=1000" alt="Quadcopter drone component diagram from Wikimedia Commons" />
+        <figcaption>
+          Drone component diagram from Wikimedia Commons: <em>Drone Diagram.jpg</em> by Glosome, CC BY-SA 4.0. Used here as an educational component reference.
+        </figcaption>
+      </figure>
+      <div class="grid" style="margin-top:18px">
+        <div class="card"><span class="tag orange">Flight controller</span><h3>Safety-critical autopilot</h3><p>Runs ArduPilot/PX4-like logic: stabilization, modes, EKF, failsafes, LAND/RTL and motor mixing.</p></div>
+        <div class="card"><span class="tag green">Companion computer</span><h3>Edge autonomy</h3><p>Runs perception, mission-specific foundation model, local planning, and communicates with the flight controller using MAVLink.</p></div>
+        <div class="card"><span class="tag">Sensors</span><h3>Scene input</h3><p>Camera, GPS, IMU, barometer, range sensor or LiDAR provide raw observations for state estimation and scene understanding.</p></div>
+        <div class="card"><span class="tag purple">Communication</span><h3>GCS link</h3><p>Telemetry and mission commands move between GCS and vehicle through MAVLink over radio, Wi-Fi, LTE or mesh networking.</p></div>
+      </div>
     </section>
 
     <section id="edge-foundation">
       <h2>4. Mission-specific foundation model on the edge</h2>
       <p>
-        A large foundation model may be trained or adapted offline, but the deployed drone needs an efficient mission-specific version:
-        distilled, quantized, or split into perception + reasoning modules. The edge model should not replace the flight controller.
-        It should interpret the scene and decide what mission-level action is useful and safe.
+        The foundation model is the semantic brain of the drone. It is trained, fine-tuned, distilled or adapted for the mission domain:
+        road inspection, perimeter surveillance, disaster response, search-and-rescue, swarm coordination, or asset classification.
       </p>
-      <div class="grid">
-        <div class="card"><span class="tag">input</span><h3>What the model sees</h3><p>Camera image, detections, map context, telemetry, prior mission state, friendly asset locations, no-fly zones, and communication quality.</p></div>
-        <div class="card"><span class="tag green">reasoning</span><h3>What the model builds</h3><p>A belief state: road, building, tree, vehicle, open area, unknown object, threat probability, confidence, and next-best viewpoint.</p></div>
-        <div class="card"><span class="tag orange">output</span><h3>What it commands</h3><p>Inspect area, orbit target, hold position, update map, follow route, request human confirmation, or send waypoint/velocity command.</p></div>
+      <pre>
+Generic foundation model
+        ↓ fine-tune / distill / specialize
+Mission-specific edge model
+        ↓
+Understands local scene:
+  road, vehicle, human, tree, building, open area, obstacle
+        ↓
+Understands mission context:
+  friendly asset, unknown asset, enemy asset, no-fly zone, priority zone
+        ↓
+Outputs structured belief state and recommended next action
+      </pre>
+      <div>
+        <span class="pill">semantic segmentation</span>
+        <span class="pill">object detection</span>
+        <span class="pill">depth / 3D reasoning</span>
+        <span class="pill">asset classification</span>
+        <span class="pill">mission reasoning</span>
+        <span class="pill">uncertainty tracking</span>
       </div>
     </section>
 
     <section id="aerial-scene">
       <h2>5. Aerial scene understanding example</h2>
+      <p>
+        The aerial intersection image is useful as a mental model for what a drone camera sees: road geometry, vehicles, buildings, vegetation,
+        parking spaces and possible mission-relevant assets.
+      </p>
       <figure>
-        <img class="scene"
-             src="https://images.pexels.com/photos/34945298/pexels-photo-34945298/free-photo-of-aerial-view-of-urban-intersection-with-autumn-trees.jpeg?auto=compress&cs=tinysrgb&w=1000"
-             alt="Aerial view of an urban road intersection with trees, roads, buildings, parked vehicles, and open areas" />
+        <img class="scene" src="https://images.pexels.com/photos/34945298/pexels-photo-34945298/free-photo-of-aerial-view-of-urban-intersection-with-autumn-trees.jpeg?cs=srgb&dl=pexels-photo-34945298.jpeg&fm=jpg&w=1000" alt="Aerial view of an urban intersection with trees and roads" />
         <figcaption>
-          Example aerial street scene from Pexels, used only as an educational scene-understanding illustration. Verify the source page/license before formal reuse.
+          Example aerial street image from Pexels. Used as an educational scene-understanding example. Verify the source photo page and license before formal reuse.
         </figcaption>
       </figure>
-
-      <p>
-        From a drone viewpoint, this scene can be converted into a structured representation: roads, lanes, stop lines, buildings,
-        trees, parking/open areas, vehicles, and possible mission-relevant objects. The edge model turns pixels into a map-like belief state.
-      </p>
-      <pre>                 TOP-DOWN AERIAL VIEW
+      <h3>Inferred structure from the image</h3>
+      <pre>
+                 TOP-DOWN AERIAL VIEW
 ┌────────────────────────────────────────────┐
-│ Buildings / roofs        Trees / vegetation │
+│ Buildings / roofs        Trees / vegetation│
 │                                            │
 │        │  vertical road corridor  │         │
 │        │  lane markings + cars    │         │
@@ -174,117 +168,96 @@ Flight controller:
 │        │ crosswalk / stop lines   │         │
 │────────┼──────────────────────────┼────────│
 │ Parking / open area     Building blocks     │
-└────────────────────────────────────────────┘</pre>
+└────────────────────────────────────────────┘
+      </pre>
+      <p>
+        The edge model should convert such raw imagery into semantic layers: road, lane, junction, parked vehicle, moving vehicle,
+        building, tree, open area, obstacle, safe landing area and mission-relevant asset.
+      </p>
     </section>
 
     <section id="belief-state">
       <h2>6. Belief state from the drone</h2>
       <p>
-        The belief state is the internal scene memory of the drone. It is not just object detection. It combines perception,
-        confidence, mission labels, uncertainty, and recommended next actions.
+        A drone should not only say “I see pixels.” It should maintain a belief state: what it currently believes about the world,
+        with confidence, uncertainty and mission labels.
       </p>
-      <pre>belief_state:
-  drone:
-    pose: [x, y, z, yaw]
-    mode: guided / auto / hold
-    battery: normal
-    link_quality: medium
+      <pre>
+Drone observation
+  camera image + pose + altitude + timestamp
+        ↓
+Edge foundation model
+        ↓
+Belief state
+  static map:
+    road corridor: high confidence
+    intersection: high confidence
+    buildings: medium/high confidence
+    trees/vegetation: high confidence
+    open/parking area: medium confidence
 
-  static_scene:
-    road_corridor: detected, confidence 0.93
-    intersection: detected, confidence 0.89
-    buildings: detected, confidence 0.86
-    trees_vegetation: detected, confidence 0.91
-    parking_or_open_area: detected, confidence 0.78
+  dynamic objects:
+    vehicles: detected, track confidence 0.70–0.95
+    pedestrians: unknown / not visible
 
-  dynamic_objects:
-    vehicles:
-      - id: car_01
-        location: near_intersection
-        motion: slow_or_parked
-        confidence: 0.82
-      - id: car_02
-        location: vertical_road
-        motion: unknown
-        confidence: 0.74
-
-  tactical_labels:
-    friendly_assets: []
-    enemy_or_suspicious_assets:
-      - candidate_object_near_road_edge
-    unknown_assets:
-      - partially_occluded_vehicle
-      - unclear_object_near_building
+  tactical labels:
+    friendly asset: known blue icon / confirmed ID
+    unknown asset: detected but not classified
+    enemy asset: only if mission rules and evidence support it
 
   uncertainty:
-    occluded_regions:
-      - behind_trees
-      - building_shadow_area
-    next_best_view:
-      action: move_to_oblique_viewpoint
-      reason: reduce occlusion and verify unknown assets
+    occluded region behind trees/buildings
+    low-confidence detections near shadows
 
-  recommended_action:
-    type: inspect
-    target: intersection_and_unknown_assets
-    command_to_flight_controller: waypoint_or_orbit_request</pre>
+  recommended next action:
+    inspect intersection
+    orbit target area
+    request GCS confirmation
+    send waypoint to flight controller
+      </pre>
+    </section>
+
+    <section id="public-3d-vision">
+      <h2>7. Public 3D vision example: ground vehicle dataset</h2>
+      <p>
+        A useful public example of 3D vision is the CARD dataset video from CARIAD. It shows how cameras, geometry,
+        depth and semantic understanding are used in a ground-vehicle setting. For this project, it is included only as an external educational reference.
+      </p>
+      <p>
+        <a href="https://card.content.cariad.digital/videos/website_main_video_3.mp4" target="_blank" rel="noopener noreferrer">
+          Open public CARD 3D vision example video
+        </a>
+      </p>
       <div class="note">
-        This is the core of the architecture: the foundation model creates mission understanding, but the flight controller executes only safe flight commands.
+        The video is not hosted in this repository and is not part of this project. It is linked as an external public example.
+        Verify the dataset/video license before formal, commercial or publication use.
       </div>
-    </section>
+      <pre>
+Ground vehicle 3D vision
+  camera + LiDAR/depth + odometry
+        ↓
+3D scene understanding
+        ↓
+road, vehicle, free space, obstacle, depth, motion
+        ↓
+planning and safe navigation
 
-    <section id="networking">
-      <h2>7. Networking and communication</h2>
-      <pre>GCS ⇄ Drone companion:
-  - mission intent
-  - map updates
-  - operator commands
-  - detection summaries
-  - health state
-
-Companion ⇄ Flight controller:
-  - MAVLink heartbeat
-  - mode changes
-  - waypoint / velocity / land / RTL commands
-  - telemetry
-  - command acknowledgements
-
-Drone ⇄ Drone:
-  - peer location
-  - local map fragments
-  - task allocation
-  - warning messages
-  - bandwidth-aware summaries</pre>
-    </section>
-
-    <section id="simulation">
-      <h2>8. How this maps to simulation</h2>
-      <pre>drone-3d-demo:
-  browser-based 3D visualization
-  GCS concept
-  asset placement
-  friendly / unknown / enemy labels
-  FOV and scene-understanding explanation
-
-ardupilot-swarm-sim:
-  Gazebo / SITL physics
-  ArduPilot flight controller behavior
-  MAVLink commands
-  companion-computer style agents
-  waypoint and swarm experiments
-
-future bridge:
-  ardupilot-swarm-sim publishes live telemetry and detections
-  drone-3d-demo visualizes state, mission intent, belief state, and asset labels</pre>
+Drone autonomy analogy
+  drone camera + altitude + pose + local map
+        ↓
+edge foundation model
+        ↓
+semantic map + belief state + mission action
+      </pre>
     </section>
 
     <section id="roadmap">
-      <h2>9. Roadmap</h2>
+      <h2>8. Roadmap: from demo to realistic autonomy</h2>
       <div class="grid">
-        <div class="card"><span class="tag">phase 1</span><h3>Explain architecture</h3><p>Use the web docs to show GCS, companion computer, flight controller, assets, networking, and belief state.</p></div>
-        <div class="card"><span class="tag green">phase 2</span><h3>Build richer 3D environment</h3><p>Add terrain, roads, buildings, trees, friendly units, unknown objects, enemy-like assets, and mission zones.</p></div>
-        <div class="card"><span class="tag orange">phase 3</span><h3>Connect simulated state</h3><p>Stream drone telemetry and mission state from the ArduPilot/Gazebo backend into the browser GCS.</p></div>
-        <div class="card"><span class="tag purple">phase 4</span><h3>Add edge AI loop</h3><p>Run a mission-specific perception/reasoning model on a companion-computer process and visualize its belief state.</p></div>
+        <div class="card"><span class="tag">Step 1</span><h3>Browser 3D environment</h3><p>Build roads, buildings, trees, friendly assets, unknown assets and enemy assets in a web-based 3D scene.</p></div>
+        <div class="card"><span class="tag green">Step 2</span><h3>GCS dashboard</h3><p>Visualize drone state, mission intent, map, detections, belief state and operator approvals.</p></div>
+        <div class="card"><span class="tag orange">Step 3</span><h3>ArduPilot / Gazebo backend</h3><p>Connect the web GCS to the SITL backend using WebSocket/REST, and map live MAVLink state into the 3D view.</p></div>
+        <div class="card"><span class="tag purple">Step 4</span><h3>Edge model</h3><p>Run mission-specific model on companion computer; send high-level commands to the flight controller, not direct motor control.</p></div>
       </div>
     </section>
   </main>
