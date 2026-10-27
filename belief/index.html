@@ -63,6 +63,28 @@
 <tr><td>Temporary disconnection</td><td>Documented safe fallback, buffering and resumed coordination</td><td>Uninterrupted autonomous mission execution</td></tr>
 <tr><td>GNSS degraded/denied in simulation</td><td>Behavior with missing GNSS and alternative estimation assumptions</td><td>Field-proven GPS-denied navigation</td></tr>
 </tbody></table>
+<h3>Evolution of edge intelligence</h3>
+<p>Our goal is not merely to move inference from the cloud to a UAV. It is to <strong>progressively increase the intelligence that can operate onboard</strong>. Small task-specific models—for object detection, segmentation and tracking—are the first candidates for edge execution. The GCS initially provides the more general intelligence: understanding mission objectives, combining beliefs across UAVs, prioritizing tasks and proposing coordinated actions.</p>
+<p>We plan to use the richer ground-side reasoning as a source of demonstrations and training signals. Selected behaviors can then be <strong>distilled into smaller onboard models or policies</strong>, tested in simulation and deployed incrementally. Each UAV can gradually progress from detecting an object, to maintaining a local belief, to choosing a bounded mission action without continuously asking the GCS.</p>
+<div class="figure"><div class="figtitle">Figure 4 — Moving selected mission intelligence toward the edge</div>
+<svg viewBox="0 0 750 246" role="img" aria-label="Onboard task models and local belief connect to general GCS mission intelligence; selected mission behaviors are distilled onboard over time">
+<rect x="1" y="1" width="748" height="244" fill="#fff" stroke="#d8dfe5"/>
+<g font-family="Arial,Helvetica,sans-serif" text-anchor="middle">
+<text x="170" y="27" font-size="16" font-weight="bold" fill="#234d68">ONBOARD UAV</text><text x="563" y="27" font-size="16" font-weight="bold" fill="#234d68">GROUND / GCS</text>
+<rect x="40" y="46" width="262" height="50" rx="5" fill="#eaf3f8" stroke="#7198b3"/>
+<text x="171" y="68" font-size="14" fill="#1c405b">Task-specific AI</text><text x="171" y="85" font-size="11" fill="#536b7b">Detection · segmentation · tracking</text>
+<rect x="40" y="111" width="262" height="50" rx="5" fill="#edf5ee" stroke="#87aa88"/>
+<text x="171" y="132" font-size="14" fill="#1f5531">Local belief &amp; bounded actions</text><text x="171" y="149" font-size="11" fill="#56765e">Increasing onboard autonomy</text>
+<rect x="425" y="52" width="290" height="76" rx="5" fill="#f2f5f7" stroke="#9caebb"/>
+<text x="570" y="75" font-size="14" fill="#273b4a">General mission intelligence</text><text x="570" y="96" font-size="11" fill="#526875">Global belief · task planning</text><text x="570" y="112" font-size="11" fill="#526875">Fleet coordination · human supervision</text>
+<path d="M302 82H425" stroke="#46718f" stroke-width="2" fill="none"/><path d="M416 77L425 82L416 87" stroke="#46718f" stroke-width="2" fill="none"/>
+<path d="M425 143H303" stroke="#4b9375" stroke-width="2" stroke-dasharray="6 5" fill="none"/><path d="M311 138L302 143L311 148" stroke="#4b9375" stroke-width="2" fill="none"/>
+<text x="366" y="137" font-size="11" fill="#376f58">Distill</text>
+<path d="M170 96V111" stroke="#7993a3" stroke-width="2"/>
+<text x="375" y="191" font-size="12" fill="#4b6070">Ground reasoning guides what moves onboard.</text>
+<text x="375" y="211" font-size="12" fill="#4b6070">Not every GCS function needs to move.</text>
+</g></svg>
+<p class="caption">Target architecture, not a completed deployment. Distillation may involve supervised learning, policy learning and compact model design; successful transfer must be verified on the target edge hardware.</p></div>
 <h3>Planned sequence</h3><table class="data"><thead><tr><th>Period</th><th>Target</th></tr></thead><tbody><tr><td>0–6 months</td><td>Simulation, sensor interfaces, local-belief schema and initial cloud models</td></tr><tr><td>6–12 months</td><td>End-to-end demonstration, fault injection and coordination baseline</td></tr><tr><td>12–18 months</td><td>Move selected perception and belief updates onto edge hardware; benchmark compute, power and latency</td></tr><tr><td>18–24 months</td><td>Expand onboard coordination and direct UAV-to-UAV exchange; undertake controlled field evaluation</td></tr></tbody></table>
 <p>These are <strong>proposed engineering targets</strong>, dependent on funding, hardware access, integration and validation progress. The move to edge compute is a measured transition, not an assumption that models trained in the cloud automatically run within UAV power and thermal budgets.</p>
 <h3>How we will evaluate progress</h3>
