@@ -66,6 +66,14 @@
 <tr><td>GNSS degraded/denied in simulation</td><td>Inject GNSS loss, observe position uncertainty and test safe behavior with explicitly stated alternative localization assumptions</td><td>Field-proven GPS-denied navigation; this requires a credible alternative estimator and separate flight validation</td></tr>
 </tbody></table>
 <p>During the first prototype, the <em>local belief</em> is logically attributed to the UAV that made the observation, even if the corresponding AI inference is initially hosted offboard. This separation lets us validate the data model and mission decisions before moving the perception runtime onto UAV hardware. It does not mean the UAV already possesses independent onboard AI.</p>
+<h3>Demonstration and expected evidence</h3>
+<p>We will make the first demonstration measurable by reporting four scenarios separately. The purpose is to show both what the prototype can do and where cloud dependence remains.</p>
+<table class="data"><thead><tr><th>Demonstration</th><th>Expected evidence</th></tr></thead><tbody>
+<tr><td><strong>Normal operation</strong></td><td>Multiple agents produce observations, update beliefs and receive coordinated tasks. Record task execution and end-to-end decision time.</td></tr>
+<tr><td><strong>Communication degradation</strong></td><td>Inject packet loss, delay and temporary disconnection. Measure observation age, missed updates, decision delays and recovery after reconnection.</td></tr>
+<tr><td><strong>Cloud disconnection</strong></td><td>Show which AI functions stop, which onboard flight-control and safety functions continue, and how the system reconnects. Do not claim independent onboard AI unless deployed.</td></tr>
+<tr><td><strong>GPS denial</strong></td><td>Run GNSS-degraded simulation; evaluate position uncertainty and safe responses. This is not evidence of field-proven GPS-denied navigation.</td></tr>
+</tbody></table>
 <h3>Evolution of edge intelligence</h3>
 <p>Our goal is not merely to move inference from the cloud to a UAV. It is to <strong>progressively increase the intelligence that can operate onboard</strong>. Small task-specific models—for object detection, segmentation and tracking—are the first candidates for edge execution. The GCS initially provides the more general intelligence: understanding mission objectives, combining beliefs across UAVs, prioritizing tasks and proposing coordinated actions.</p>
 <p>We plan to use the richer ground-side reasoning as a source of demonstrations and training signals. Selected behaviors can then be <strong>distilled into smaller onboard models or policies</strong>, tested in simulation and deployed incrementally. Each UAV can gradually progress from detecting an object, to maintaining a local belief, to choosing a bounded mission action without continuously asking the GCS.</p>
