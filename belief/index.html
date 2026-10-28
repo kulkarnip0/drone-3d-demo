@@ -69,28 +69,40 @@
 <tr><td><strong>GPS denial</strong></td><td>Run GNSS-degraded simulation; evaluate position uncertainty and safe responses. This is not evidence of field-proven GPS-denied navigation.</td></tr>
 </tbody></table>
 <h3>Evolution of edge intelligence</h3>
-<p>Our goal is not merely to move inference from the cloud to a UAV. It is to <strong>progressively increase the intelligence that can operate onboard</strong>. Small task-specific models—for object detection, segmentation and tracking—are the first candidates for edge execution. The GCS initially provides the more general intelligence: understanding mission objectives, combining beliefs across UAVs, prioritizing tasks and proposing coordinated actions.</p>
-<p>We plan to use the richer ground-side reasoning as a source of demonstrations and training signals. Selected behaviors can then be <strong>distilled into smaller onboard models or policies</strong>, tested in simulation and deployed incrementally. Each UAV can gradually progress from detecting an object, to maintaining a local belief, to choosing a bounded mission action without continuously asking the GCS.</p>
-<div class="figure"><div class="figtitle">Figure 4 — Moving selected mission intelligence toward the edge</div>
-<svg viewBox="0 0 750 246" role="img" aria-label="Onboard task models and local belief connect to general GCS mission intelligence; selected mission behaviors are distilled onboard over time">
-<rect x="1" y="1" width="748" height="244" fill="#fff" stroke="#d8dfe5"/>
-<g font-family="Arial,Helvetica,sans-serif" text-anchor="middle">
-<text x="170" y="27" font-size="16" font-weight="bold" fill="#234d68">ONBOARD UAV</text><text x="563" y="27" font-size="16" font-weight="bold" fill="#234d68">GROUND / GCS</text>
-<rect x="40" y="46" width="262" height="50" rx="5" fill="#eaf3f8" stroke="#7198b3"/>
-<text x="171" y="68" font-size="14" fill="#1c405b">Task-specific AI</text><text x="171" y="85" font-size="11" fill="#536b7b">Detection · segmentation · tracking</text>
-<rect x="40" y="111" width="262" height="50" rx="5" fill="#edf5ee" stroke="#87aa88"/>
-<text x="171" y="132" font-size="14" fill="#1f5531">Local belief &amp; bounded actions</text><text x="171" y="149" font-size="11" fill="#56765e">Increasing onboard autonomy</text>
-<rect x="425" y="52" width="290" height="76" rx="5" fill="#f2f5f7" stroke="#9caebb"/>
-<text x="570" y="75" font-size="14" fill="#273b4a">General mission intelligence</text><text x="570" y="96" font-size="11" fill="#526875">Global belief · task planning</text><text x="570" y="112" font-size="11" fill="#526875">Fleet coordination · human supervision</text>
-<path d="M302 82H425" stroke="#46718f" stroke-width="2" fill="none"/><path d="M416 77L425 82L416 87" stroke="#46718f" stroke-width="2" fill="none"/>
-<path d="M425 143H303" stroke="#4b9375" stroke-width="2" stroke-dasharray="6 5" fill="none"/><path d="M311 138L302 143L311 148" stroke="#4b9375" stroke-width="2" fill="none"/>
-<text x="366" y="137" font-size="11" fill="#376f58">Distill</text>
-<path d="M170 96V111" stroke="#7993a3" stroke-width="2"/>
-<text x="375" y="191" font-size="12" fill="#4b6070">Ground reasoning guides what moves onboard.</text>
-<text x="375" y="211" font-size="12" fill="#4b6070">Not every GCS function needs to move.</text>
+<p>We separate two activities that happen at different times. <strong>During a mission</strong>, the UAV and GCS exchange observations and tasks. <strong>Between development cycles</strong>, we use examples of ground-side mission reasoning to train and validate smaller models that may later run onboard. Distillation is a development process, not a live communication message.</p>
+<div class="figure"><div class="figtitle">Figure 4 — How intelligence gradually moves onboard</div>
+<svg viewBox="0 0 760 460" role="img" aria-label="Two separate flows: operational UAV to GCS exchange and offline training and deployment from GCS demonstrations to onboard decision policies">
+<rect width="760" height="460" fill="#fff"/>
+<g font-family="Arial,Helvetica,sans-serif">
+<text x="16" y="25" font-size="16" font-weight="bold" fill="#243c4f">A. DURING A MISSION</text>
+<text x="16" y="45" font-size="12" fill="#536471">Exchange compact beliefs and task assignments</text>
+<rect x="16" y="62" width="303" height="126" rx="5" fill="#edf4f8" stroke="#89a4b6" stroke-width="1.5"/>
+<text x="167" y="87" text-anchor="middle" font-weight="bold" font-size="15" fill="#264b63">UAV / onboard</text>
+<text x="167" y="111" text-anchor="middle" font-size="13" fill="#293f50">Small task-specific models</text>
+<text x="167" y="131" text-anchor="middle" font-size="12" fill="#536471">Detection · segmentation · tracking</text>
+<text x="167" y="155" text-anchor="middle" font-size="13" fill="#293f50">Generate local belief</text>
+<rect x="439" y="62" width="305" height="126" rx="5" fill="#f3f5f7" stroke="#9eaeb9" stroke-width="1.5"/>
+<text x="591" y="87" text-anchor="middle" font-weight="bold" font-size="15" fill="#264b63">GCS / ground</text>
+<text x="591" y="111" text-anchor="middle" font-size="13" fill="#293f50">Global belief and mission reasoning</text>
+<text x="591" y="131" text-anchor="middle" font-size="12" fill="#536471">Fleet priorities · task allocation</text>
+<text x="591" y="155" text-anchor="middle" font-size="13" fill="#293f50">Human-supervised coordination</text>
+<path d="M319 105H438" stroke="#547d99" stroke-width="2" fill="none"/><path d="M431 100L438 105L431 110" stroke="#547d99" stroke-width="2" fill="none"/>
+<text x="379" y="97" text-anchor="middle" font-size="11" fill="#305b79">Beliefs</text>
+<path d="M439 155H320" stroke="#698d78" stroke-width="2" fill="none"/><path d="M327 150L320 155L327 160" stroke="#698d78" stroke-width="2" fill="none"/>
+<text x="379" y="175" text-anchor="middle" font-size="11" fill="#467257">Tasks</text>
+<path d="M16 211H744" stroke="#d7dfe5" stroke-width="1.4" stroke-dasharray="6 6"/>
+<text x="16" y="237" font-size="16" font-weight="bold" fill="#243c4f">B. BETWEEN DEVELOPMENT CYCLES</text>
+<text x="16" y="258" font-size="12" fill="#536471">Learn selected behaviors, validate, then deploy to the UAV</text>
+<g fill="#f7f9fa" stroke="#b6c5cf"><rect x="16" y="282" width="164" height="82" rx="5"/><rect x="204" y="282" width="164" height="82" rx="5"/><rect x="392" y="282" width="164" height="82" rx="5"/><rect x="580" y="282" width="164" height="82" rx="5"/></g>
+<g text-anchor="middle" fill="#243c4f" font-size="12"><text x="98" y="310" font-weight="bold">Ground-side</text><text x="98" y="326">examples / decisions</text><text x="286" y="310" font-weight="bold">Distill</text><text x="286" y="326">smaller policy</text><text x="474" y="310" font-weight="bold">Validate</text><text x="474" y="326">simulator + edge</text><text x="662" y="310" font-weight="bold">Deploy</text><text x="662" y="326">selected actions</text></g>
+<g stroke="#557e99" stroke-width="2" fill="none"><path d="M180 323H203"/><path d="M195 318L203 323L195 328"/><path d="M368 323H391"/><path d="M383 318L391 323L383 328"/><path d="M556 323H579"/><path d="M571 318L579 323L571 328"/></g>
+<rect x="120" y="389" width="520" height="50" rx="5" fill="#edf4ee" stroke="#90ad96"/>
+<text x="380" y="409" text-anchor="middle" font-size="14" font-weight="bold" fill="#315741">Later UAV capability</text>
+<text x="380" y="427" text-anchor="middle" font-size="12" fill="#476651">Make selected safe local decisions without asking the GCS each time</text>
 </g></svg>
-<p class="caption">Target architecture, not a completed deployment. Distillation may involve supervised learning, policy learning and compact model design; successful transfer must be verified on the target edge hardware.</p></div>
-<p>We distinguish three milestones: <strong>distributed information</strong> (agents exchange compact beliefs), <strong>distributed decisions</strong> (agents make bounded choices without waiting for the GCS), and <strong>distributed intelligence</strong> (increasingly sophisticated onboard models and policies). These milestones can progress separately. We do not intend to move every GCS function onboard: broader fleet reasoning and human supervision may remain at the ground station.</p>
+<p class="caption">Conceptual development path, not an implemented system. Early cloud inference may produce a belief logically associated with a UAV; task-specific inference moves onboard as edge hardware is integrated. Distilled policies must pass safety, simulation and hardware validation before deployment.</p></div>
+<p><strong>The intended progression is:</strong> first, move small perception and tracking models onboard; next, generate and share local beliefs onboard; finally, transfer selected mission behaviors into onboard decision policies. The GCS can still retain fleet-wide reasoning and human supervision. We are not trying to move every ground-side function onto each UAV.</p>
+<p>We distinguish three milestones: <strong>distributed information</strong> (agents exchange compact beliefs), <strong>distributed decisions</strong> (agents make bounded choices without waiting for the GCS), and <strong>distributed intelligence</strong> (increasingly sophisticated onboard models and policies). These milestones can progress separately.</p>
 <h3>Planned sequence</h3><table class="data"><thead><tr><th>Period</th><th>Target</th></tr></thead><tbody><tr><td>0–6 months</td><td>Simulation, sensor interfaces, local-belief schema and initial cloud models</td></tr><tr><td>6–12 months</td><td>End-to-end demonstration, fault injection and coordination baseline</td></tr><tr><td>12–18 months</td><td>Move selected perception and belief updates onto edge hardware; benchmark compute, power and latency</td></tr><tr><td>18–24 months</td><td>Expand onboard coordination and direct UAV-to-UAV exchange; undertake controlled field evaluation</td></tr></tbody></table>
 <p>These are <strong>proposed engineering targets</strong>, dependent on funding, hardware access, integration and validation progress. The move to edge compute is a measured transition, not an assumption that models trained in the cloud automatically run within UAV power and thermal budgets.</p>
 <p>For the first demonstration we will report four sets of results separately: normal end-to-end function; sensitivity to controlled latency and packet loss (observation age, missed updates and recovery time); behavior after cloud disconnection (functions that stop, safe fallback and reconnection); and simulated GNSS degradation (localization assumptions, estimated uncertainty and safe response). Test thresholds will be defined against the selected UAV platform, compute hardware and communication link rather than asserted in advance.</p>
