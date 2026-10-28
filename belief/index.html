@@ -59,13 +59,7 @@
 <section id="validation"><h2>3. Demonstration, communication loss and edge deployment</h2><div class="question">If the 9–12-month demonstration uses cloud inference, what can it show under communication-degraded or GPS-denied conditions, and when does inference move onboard?</div>
 <p class="result">The first demonstration validates the decision pipeline—not full operational independence from the cloud.</p>
 <p>Our 9–12-month goal is to show sensing, object-level beliefs, a merged mission view and coordinated tasking across multiple simulated or controlled UAV agents. Some AI inference may still depend on cloud connectivity. A cloud-dependent UAV cannot produce new AI detections during an outage unless an onboard fallback model is available; safe flight-controller behavior or completion of a previously authorized bounded task should not be confused with continued autonomous ISR. Communication loss and GNSS loss also require separate tests and mitigations.</p>
-<table class="data"><thead><tr><th>Test</th><th>What we intend to demonstrate</th><th>What it does not establish</th></tr></thead><tbody>
-<tr><td>Normal connectivity</td><td>End-to-end object beliefs, global view, and coordinated tasks</td><td>Production readiness</td></tr>
-<tr><td>Latency / packet loss</td><td>Message delay handling, stale-data checks and recovery after reconnect</td><td>Independent cloud-free AI inference</td></tr>
-<tr><td>Temporary disconnection</td><td>Documented safe fallback, buffering and resumed coordination</td><td>Uninterrupted autonomous mission execution</td></tr>
-<tr><td>GNSS degraded/denied in simulation</td><td>Inject GNSS loss, observe position uncertainty and test safe behavior with explicitly stated alternative localization assumptions</td><td>Field-proven GPS-denied navigation; this requires a credible alternative estimator and separate flight validation</td></tr>
-</tbody></table>
-<p>During the first prototype, the <em>local belief</em> is logically attributed to the UAV that made the observation, even if the corresponding AI inference is initially hosted offboard. This separation lets us validate the data model and mission decisions before moving the perception runtime onto UAV hardware. It does not mean the UAV already possesses independent onboard AI.</p>
+<p>In Phase 1, each local belief represents one UAV’s observations, even if inference initially runs in the cloud. Onboard belief generation follows when task-specific models move to edge compute.</p>
 <h3>Demonstration and expected evidence</h3>
 <p>We will make the first demonstration measurable by reporting four scenarios separately. The purpose is to show both what the prototype can do and where cloud dependence remains.</p>
 <table class="data"><thead><tr><th>Demonstration</th><th>Expected evidence</th></tr></thead><tbody>
